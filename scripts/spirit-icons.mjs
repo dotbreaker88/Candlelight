@@ -31,7 +31,9 @@ export function getSpiritKey(spiritOrKey) {
 
 export function getSpiritIcon(spiritOrKey) {
   const key = getSpiritKey(spiritOrKey);
-  return key ? `systems/candlelight/assets/icons/spirits/${key}.webp` : null;
+  // Use an absolute Foundry URL. Relative URLs inside CSS mask variables can resolve
+  // against the current application route rather than the system root.
+  return key ? `/systems/candlelight/assets/icons/spirits/${key}.webp` : null;
 }
 
 export function getSpiritLabel(spiritOrKey) {
