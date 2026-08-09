@@ -1,0 +1,237 @@
+/* v0.5.7 — expanded ornate portrait assembly with recessed Spirit medallion */
+
+/* Give the portrait card enough physical presence to match the mockup proportions. */
+.candlelight-sheet .cl-core-hero {
+  grid-template-columns: 196px minmax(0,1fr) !important;
+  gap: 22px !important;
+  align-items: start !important;
+}
+
+.candlelight-sheet .cl-core-portrait {
+  position: relative !important;
+  width: 182px !important;
+  min-height: 292px !important;
+  padding: 18px 16px 92px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  isolation: isolate;
+}
+
+/* Main heraldic shell. The lower point is deliberately extended so the Spirit
+   medallion reads as a socket built into the portrait frame rather than a badge
+   hanging below it. */
+.candlelight-sheet .cl-core-portrait::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0 0 34px;
+  clip-path: polygon(
+    18% 0, 82% 0,
+    88% 3%, 96% 9%,
+    100% 18%, 100% 73%,
+    96% 82%, 87% 87%,
+    78% 92%, 69% 100%,
+    31% 100%, 22% 92%,
+    13% 87%, 4% 82%,
+    0 73%, 0 18%,
+    4% 9%, 12% 3%
+  );
+  background:
+    radial-gradient(circle at 50% 5%, var(--cl-frame-highlight) 0 2px, transparent 3px),
+    radial-gradient(circle at 12% 22%, var(--cl-frame-accent) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 22%, var(--cl-frame-accent) 0 2px, transparent 3px),
+    radial-gradient(circle at 8% 68%, var(--cl-frame-highlight) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 92% 68%, var(--cl-frame-highlight) 0 1.5px, transparent 2.5px),
+    linear-gradient(145deg,
+      var(--cl-frame-highlight) 0 5%,
+      var(--cl-frame-accent) 12%,
+      var(--cl-frame-deep) 31%,
+      #17191a 43%,
+      var(--cl-frame-deep) 57%,
+      var(--cl-frame-accent) 78%,
+      var(--cl-frame-highlight) 96%);
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.62),
+    0 0 20px var(--cl-frame-glow),
+    inset 0 0 0 1px color-mix(in srgb,var(--cl-frame-highlight) 75%,white 25%);
+}
+
+/* Recessed inner panel creates a visible double frame and an arched crown. */
+.candlelight-sheet .cl-core-portrait::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 8px;
+  right: 8px;
+  top: 8px;
+  bottom: 44px;
+  clip-path: polygon(
+    21% 0, 79% 0,
+    91% 8%, 97% 18%,
+    97% 73%, 91% 81%,
+    79% 86%, 69% 96%,
+    31% 96%, 21% 86%,
+    9% 81%, 3% 73%,
+    3% 18%, 9% 8%
+  );
+  background:
+    radial-gradient(ellipse at 50% 7%, color-mix(in srgb,var(--cl-frame-accent) 45%,transparent) 0 16%, transparent 17%),
+    repeating-linear-gradient(90deg, transparent 0 13px, color-mix(in srgb,var(--cl-frame-accent) 20%,transparent) 14px 15px, transparent 16px 29px),
+    linear-gradient(180deg,#0e1214 0,#07090a 58%,#111518 100%);
+  box-shadow:
+    inset 0 0 0 2px var(--cl-frame-deep),
+    inset 0 0 0 4px rgba(0,0,0,.82),
+    inset 0 0 0 5px color-mix(in srgb,var(--cl-frame-accent) 58%,#111 42%),
+    inset 0 -20px 35px rgba(0,0,0,.64);
+}
+
+/* Portrait itself becomes taller and sits inside the ornamental shell. */
+.candlelight-sheet .cl-core-portrait > .cl-character-portrait {
+  position: relative !important;
+  z-index: 3 !important;
+  width: 150px !important;
+  height: 186px !important;
+  margin: 7px 0 0 !important;
+  object-fit: cover !important;
+  border-radius: 18px 18px 8px 8px !important;
+  border: 2px solid var(--cl-frame-accent) !important;
+  outline: 1px solid color-mix(in srgb,var(--cl-frame-highlight) 74%,white 26%) !important;
+  outline-offset: 2px !important;
+  background: #050708 !important;
+  box-shadow:
+    0 0 0 5px rgba(0,0,0,.64),
+    0 0 0 6px var(--cl-frame-deep),
+    0 9px 18px rgba(0,0,0,.58),
+    0 0 13px var(--cl-frame-glow) !important;
+}
+
+/* Ornamental crown illusion: repeated highlights along the upper arch. */
+.candlelight-sheet .cl-core-portrait {
+  background:
+    radial-gradient(circle at 50% 1px, var(--cl-frame-highlight) 0 3px, transparent 4px),
+    radial-gradient(circle at 39% 11px, var(--cl-frame-accent) 0 2px, transparent 3px),
+    radial-gradient(circle at 61% 11px, var(--cl-frame-accent) 0 2px, transparent 3px),
+    transparent;
+}
+
+/* Recess the Spirit assembly into the extended lower third of the portrait card. */
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit {
+  left: 50% !important;
+  bottom: 10px !important;
+  width: 156px !important;
+  min-height: 128px !important;
+  transform: translateX(-50%) !important;
+  z-index: 7 !important;
+  filter: drop-shadow(0 8px 9px rgba(0,0,0,.72)) !important;
+}
+
+/* Connector shelf behind the medallion visually joins it to the frame uprights. */
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 34px;
+  height: 38px;
+  z-index: -2;
+  clip-path: polygon(0 35%,14% 35%,22% 0,78% 0,86% 35%,100% 35%,94% 70%,84% 70%,76% 100%,24% 100%,16% 70%,6% 70%);
+  background: linear-gradient(180deg,var(--cl-frame-highlight),var(--cl-frame-accent) 22%,var(--cl-frame-deep) 66%,#101315 100%);
+  box-shadow: 0 0 12px var(--cl-frame-glow);
+}
+
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion {
+  width: 104px !important;
+  height: 104px !important;
+  clip-path: polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%) !important;
+  background:
+    linear-gradient(145deg,
+      var(--cl-frame-highlight) 0 8%,
+      var(--cl-frame-accent) 22%,
+      var(--cl-frame-deep) 52%,
+      var(--cl-frame-accent) 78%,
+      var(--cl-frame-highlight) 100%) !important;
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,.74),
+    0 0 0 3px var(--cl-frame-deep),
+    0 0 18px var(--cl-frame-glow) !important;
+}
+
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion::before {
+  inset: 6px !important;
+  background:
+    conic-gradient(from 45deg,
+      rgba(255,255,255,.22),
+      rgba(0,0,0,.18),
+      rgba(255,255,255,.08),
+      rgba(0,0,0,.44),
+      rgba(255,255,255,.22)) !important;
+}
+
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion::after {
+  inset: 11px !important;
+  border: 2px solid var(--cl-frame-accent) !important;
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb,var(--cl-frame-deep) 20%,#1a2022 80%), #050708 74%) !important;
+  box-shadow:
+    inset 0 0 18px rgba(0,0,0,.92),
+    inset 0 0 0 2px var(--cl-frame-deep),
+    0 0 8px var(--cl-frame-glow) !important;
+}
+
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion-inner {
+  width: 78px !important;
+  height: 78px !important;
+}
+
+.candlelight-sheet .cl-core-portrait .cl-spirit-icon-fallback {
+  inset: 5px !important;
+  width: 68px !important;
+  height: 68px !important;
+  opacity: .24 !important;
+}
+
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-icon {
+  width: 70px !important;
+  height: 70px !important;
+}
+
+/* Longer side finials make the lower badge feel physically socketed into the frame. */
+.candlelight-sheet .cl-core-portrait .cl-spirit-finial {
+  top: 42px !important;
+  width: 38px !important;
+  height: 16px !important;
+  background: linear-gradient(90deg,var(--cl-frame-deep),var(--cl-frame-accent),var(--cl-frame-highlight)) !important;
+}
+.candlelight-sheet .cl-core-portrait .cl-spirit-finial-left { right: 92px !important; }
+.candlelight-sheet .cl-core-portrait .cl-spirit-finial-right { left: 92px !important; }
+
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name {
+  min-width: 112px !important;
+  max-width: 150px !important;
+  margin-top: -8px !important;
+  padding: 5px 17px 6px !important;
+  border: 2px solid var(--cl-frame-accent) !important;
+  clip-path: polygon(7% 0,93% 0,100% 50%,93% 100%,7% 100%,0 50%) !important;
+  background: linear-gradient(180deg,#171c1e,#060809) !important;
+  color: var(--cl-frame-highlight) !important;
+  font-size: 11px !important;
+  letter-spacing: .09em !important;
+  box-shadow:
+    inset 0 0 0 1px var(--cl-frame-deep),
+    0 0 10px var(--cl-frame-glow) !important;
+}
+
+/* Keep the identity column balanced against the larger portrait card. */
+.candlelight-sheet .cl-core-identity {
+  padding-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .candlelight-sheet .cl-core-hero {
+    grid-template-columns: 1fr !important;
+  }
+  .candlelight-sheet .cl-core-portrait {
+    margin-bottom: 6px !important;
+  }
+}
