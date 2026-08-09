@@ -18,13 +18,29 @@ function currentSpiritKey(actor) {
   return getSpiritKey(legacy);
 }
 
+function bindSelect(select, value, updatePath, actor) {
+  select.value = value ?? "";
+  if (select.dataset.clBound === "true") return;
+  select.dataset.clBound = "true";
+
+  // These controls live inside Foundry's Actor form, but they perform their own
+  // targeted Actor.update. Capture the change before the sheet's submitOnChange
+  // listener sees it so changing Spirit/frame never submits unrelated form fields.
+  select.addEventListener("change", async event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const next = event.currentTarget.value;
+    await actor.update({[updatePath]: next});
+  }, {capture: true});
+}
+
 function ensureControls(root, actor) {
   const key = currentSpiritKey(actor);
   const color = CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor] ? actor.system.portraitFrameColor : "gold";
   const controls = `
     <div class="cl-portrait-customizer cl-spirit-customizer" data-cl-spirit-customizer>
-      <label><span><i class="fa-solid fa-paw"></i> Spirit</span><select data-cl-spirit-select>${optionMarkup(CANDLELIGHT_SPIRITS, key, "Choose Spirit")}</select></label>
-      <label><span><i class="fa-solid fa-palette"></i> Frame</span><select data-cl-frame-select>${optionMarkup(CANDLELIGHT_FRAME_COLORS, color)}</select></label>
+      <label><span><i class="fa-solid fa-paw"></i> Spirit</span><select class="cl-custom-select" data-cl-spirit-select aria-label="Spirit selection">${optionMarkup(CANDLELIGHT_SPIRITS, key, "Choose Spirit")}</select></label>
+      <label><span><i class="fa-solid fa-palette"></i> Frame</span><select class="cl-custom-select" data-cl-frame-select aria-label="Portrait frame color">${optionMarkup(CANDLELIGHT_FRAME_COLORS, color)}</select></label>
     </div>`;
 
   if (!root.querySelector("[data-cl-spirit-customizer]")) {
@@ -41,16 +57,10 @@ function ensureControls(root, actor) {
   }
 
   for (const select of root.querySelectorAll("[data-cl-spirit-select]")) {
-    select.value = key;
-    select.addEventListener("change", async event => {
-      await actor.update({"system.spiritKey": event.currentTarget.value});
-    });
+    bindSelect(select, key, "system.spiritKey", actor);
   }
   for (const select of root.querySelectorAll("[data-cl-frame-select]")) {
-    select.value = color;
-    select.addEventListener("change", async event => {
-      await actor.update({"system.portraitFrameColor": event.currentTarget.value});
-    });
+    bindSelect(select, color, "system.portraitFrameColor", actor);
   }
 }
 
