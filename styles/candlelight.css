@@ -1,0 +1,1132 @@
+.candlelight.sheet .window-content{padding:10px;overflow-y:auto}.candlelight-sheet{display:flex;flex-direction:column;gap:12px}.cl-header{display:flex;gap:12px;align-items:center}.cl-header .profile-img{width:84px;height:84px;object-fit:cover}.cl-title{flex:1}.cl-title .name{width:100%;font-size:1.6rem;font-weight:700}.cl-summary,.cl-resources,.cl-derived,.cl-resource-grid{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.cl-resources input,.cl-derived input,.cl-resource-grid input{width:58px}.cl-stat-grid{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:8px}.cl-stat{border:1px solid var(--color-border-light-2);padding:6px;border-radius:4px}.cl-stat>button{width:100%;font-weight:600}.cl-stat-parts{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:4px}.cl-stat-parts input{width:42px}.items-list{list-style:none;margin:0;padding:0}.items-list li{display:grid;grid-template-columns:1fr 2fr auto;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--color-border-light-2)}.cl-tags{display:flex;flex-wrap:wrap;gap:6px}.cl-tag{border:1px solid var(--color-border-light-2);border-radius:10px;padding:3px 8px;text-transform:capitalize}.cl-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cl-form-grid label{display:flex;justify-content:space-between;gap:8px;align-items:center}.candlelight.chat-test h3{margin:0 0 4px}
+
+.combat-dialog textarea { width: 100%; }
+.combat-card .cl-result.hit { font-size: 1.1em; }
+.combat-card .cl-result.miss { opacity: 0.8; }
+.cl-dead { font-weight: 700; }
+
+.cl-tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--color-border-light-2);padding-bottom:4px}.cl-tabs button.active{font-weight:700;box-shadow:inset 0 -3px 0 currentColor}.cl-tab-panel{display:none}.cl-tab-panel.active{display:block}.cl-paper-doll{position:relative;display:grid;grid-template-columns:1fr 150px 1fr;grid-template-rows:auto auto auto;gap:8px;min-height:330px;align-items:center}.cl-doll-figure{grid-column:2;grid-row:1/4;text-align:center;font-size:12rem;opacity:.18}.cl-doll-slot{border:1px solid var(--color-border-light-2);border-radius:6px;padding:8px;display:grid;grid-template-columns:36px 1fr;gap:4px;align-items:center;min-height:72px}.cl-doll-slot img{width:34px;height:34px;object-fit:cover;grid-row:1/4}.cl-doll-slot .empty{opacity:.5;font-style:italic}.slot-head{grid-column:2;grid-row:1;z-index:2}.slot-torso{grid-column:2;grid-row:2;z-index:2}.slot-leftArm{grid-column:1;grid-row:2}.slot-rightArm{grid-column:3;grid-row:2}.slot-leftLeg{grid-column:1;grid-row:3}.slot-rightLeg{grid-column:3;grid-row:3}.cl-inventory li,.loot-sheet .items-list li{grid-template-columns:36px 1fr auto}.items-list li>img,.cl-tag img,.cl-effect img{width:32px;height:32px;object-fit:cover}.items-list small{display:block;opacity:.7}.cl-item-actions{display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end}.cl-effect-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cl-effect{display:grid;grid-template-columns:32px 1fr auto;gap:8px;align-items:center;border:1px solid var(--color-border-light-2);border-radius:5px;padding:6px;margin-bottom:5px}.cl-effect.positive{border-left-width:5px}.cl-effect.negative{border-right-width:5px}.cl-section-heading{display:flex;align-items:center;justify-content:space-between}.cl-feature-card{display:flex;gap:12px;border:1px solid var(--color-border-light-2);border-radius:8px;padding:10px}.cl-feature-card img{width:96px;height:96px;object-fit:cover}.cl-feature-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--color-border-light-2);padding:6px}.cl-future{font-style:italic;opacity:.65;border:1px dashed var(--color-border-light-2);padding:8px}.cl-sheet-footer{margin-top:12px}.loot-sheet .cl-title h2{margin:0}
+
+
+/* v0.3.4 portfolio-style navigation */
+.candlelight.sheet.actor.character .window-content {
+  padding-top: 0;
+}
+
+.candlelight-sheet > .cl-header {
+  margin-top: 10px;
+}
+
+.cl-portfolio-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin: 0 -10px 12px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--color-border-light-2);
+  overflow-x: auto;
+}
+
+.cl-portfolio-tab {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 76px;
+  margin: 0;
+  padding: 8px 14px 7px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+  background: transparent;
+  box-shadow: none;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cl-portfolio-tab:hover {
+  border-color: var(--color-border-light-2);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.cl-portfolio-tab.active {
+  position: relative;
+  top: 1px;
+  border-color: var(--color-border-light-2);
+  background: var(--color-bg-option);
+}
+
+.cl-tab-panel {
+  display: none;
+}
+
+.cl-tab-panel.active {
+  display: block;
+}
+
+
+/* ============================================================
+   Candlelight v0.4.0 visual refresh
+   ============================================================ */
+
+.candlelight.sheet.actor.character {
+  --cl-ink: #e9dfc7;
+  --cl-muted: #aa9f8a;
+  --cl-gold: #d3a04c;
+  --cl-gold-soft: #8c672f;
+  --cl-panel: rgba(13, 16, 18, 0.88);
+  --cl-panel-strong: rgba(9, 12, 14, 0.95);
+  --cl-panel-warm: rgba(35, 24, 17, 0.86);
+  --cl-burgundy: #5e2527;
+  --cl-burgundy-bright: #91373a;
+  --cl-teal: #245d66;
+  --cl-green: #59662d;
+  --cl-purple: #5a3f70;
+  --cl-line: rgba(211, 160, 76, 0.34);
+  --cl-line-soft: rgba(235, 223, 199, 0.13);
+}
+
+.candlelight.sheet.actor.character .window-content {
+  padding: 0;
+  color: var(--cl-ink);
+  background:
+    linear-gradient(rgba(7, 9, 10, .72), rgba(7, 9, 10, .84)),
+    url("../assets/sheet-backdrop.svg") center / cover fixed;
+}
+
+.candlelight.sheet.actor.character .candlelight-sheet {
+  min-height: 100%;
+  gap: 0;
+}
+
+.candlelight.sheet.actor.character .cl-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  margin: 0;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--cl-line);
+  background:
+    linear-gradient(90deg, rgba(28,20,14,.94), rgba(12,15,17,.83) 48%, rgba(10,12,14,.94));
+  box-shadow: inset 0 -1px rgba(0,0,0,.8), 0 8px 24px rgba(0,0,0,.22);
+}
+
+.candlelight.sheet.actor.character .cl-brand {
+  position: absolute;
+  top: 8px;
+  left: 154px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--cl-gold);
+  font-size: 11px;
+  letter-spacing: .22em;
+  font-weight: 700;
+  opacity: .9;
+}
+
+.candlelight.sheet.actor.character .cl-brand-flame {
+  font-size: 12px;
+  text-shadow: 0 0 8px rgba(211,160,76,.7);
+}
+
+.candlelight.sheet.actor.character .profile-img {
+  width: 108px;
+  height: 108px;
+  border: 1px solid var(--cl-gold-soft);
+  border-radius: 8px;
+  object-fit: cover;
+  background: #07090a;
+  box-shadow:
+    0 0 0 3px rgba(0,0,0,.45),
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    0 8px 24px rgba(0,0,0,.4);
+}
+
+.candlelight.sheet.actor.character .cl-title {
+  padding-top: 10px;
+}
+
+.candlelight.sheet.actor.character .cl-title .name {
+  height: auto;
+  padding: 2px 0 6px;
+  border: none;
+  border-bottom: 1px solid rgba(211,160,76,.16);
+  border-radius: 0;
+  background: transparent;
+  color: #f4ead3;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 31px;
+  font-weight: 600;
+  letter-spacing: .015em;
+  box-shadow: none;
+}
+
+.candlelight.sheet.actor.character .cl-title .name:focus {
+  border-bottom-color: var(--cl-gold);
+  box-shadow: none;
+}
+
+.candlelight.sheet.actor.character .cl-summary {
+  margin-top: 9px;
+  color: var(--cl-muted);
+  gap: 14px;
+}
+
+.candlelight.sheet.actor.character .cl-summary strong {
+  color: var(--cl-gold);
+}
+
+.candlelight.sheet.actor.character input,
+.candlelight.sheet.actor.character select,
+.candlelight.sheet.actor.character textarea {
+  color: var(--cl-ink);
+  border: 1px solid rgba(211,160,76,.25);
+  background: rgba(5,7,8,.58);
+}
+
+.candlelight.sheet.actor.character input:focus,
+.candlelight.sheet.actor.character select:focus,
+.candlelight.sheet.actor.character textarea:focus {
+  border-color: var(--cl-gold);
+  box-shadow: 0 0 0 1px rgba(211,160,76,.18);
+}
+
+.candlelight.sheet.actor.character .cl-portfolio-tabs {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 0;
+  margin: 0;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(211,160,76,.46);
+  background: rgba(7,9,10,.92);
+  overflow-x: auto;
+}
+
+.candlelight.sheet.actor.character .cl-portfolio-tab {
+  min-width: 92px;
+  padding: 11px 16px 10px;
+  color: #bdb19a;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.candlelight.sheet.actor.character .cl-portfolio-tab:hover {
+  color: #f2e5c6;
+  border-color: rgba(211,160,76,.22);
+  background: rgba(211,160,76,.07);
+}
+
+.candlelight.sheet.actor.character .cl-portfolio-tab.active {
+  top: 1px;
+  color: #fff1cf;
+  border-color: rgba(211,160,76,.55);
+  background:
+    linear-gradient(180deg, rgba(116,77,30,.58), rgba(36,27,18,.92));
+  box-shadow: inset 0 1px rgba(255,220,150,.15);
+}
+
+.candlelight.sheet.actor.character .cl-tab-panel {
+  padding: 18px 22px 26px;
+}
+
+.candlelight.sheet.actor.character section {
+  margin: 0 0 14px;
+  padding: 13px 14px;
+  border: 1px solid var(--cl-line-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(22,26,28,.82), rgba(10,13,15,.88));
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.025),
+    0 5px 16px rgba(0,0,0,.18);
+}
+
+.candlelight.sheet.actor.character section h2,
+.candlelight.sheet.actor.character section h3 {
+  margin-top: 0;
+  color: var(--cl-gold);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: .035em;
+}
+
+.candlelight.sheet.actor.character section h2 {
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(211,160,76,.19);
+  font-size: 18px;
+}
+
+.candlelight.sheet.actor.character .cl-resources {
+  display: grid;
+  grid-template-columns: minmax(250px, 1.8fr) minmax(130px, .7fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  border-color: rgba(145,55,58,.34);
+  background:
+    linear-gradient(90deg, rgba(69,27,29,.38), rgba(13,16,18,.88) 45%);
+}
+
+.candlelight.sheet.actor.character .cl-resources > div:first-child strong {
+  color: #e47073;
+}
+
+.candlelight.sheet.actor.character button {
+  color: var(--cl-ink);
+  border: 1px solid rgba(211,160,76,.28);
+  background: linear-gradient(180deg, rgba(68,52,30,.66), rgba(24,20,15,.9));
+  box-shadow: none;
+}
+
+.candlelight.sheet.actor.character button:hover {
+  color: #fff0ce;
+  border-color: rgba(211,160,76,.65);
+  background: linear-gradient(180deg, rgba(105,73,31,.74), rgba(33,24,16,.94));
+}
+
+.candlelight.sheet.actor.character .cl-derived {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 10px;
+  background: rgba(10,14,16,.84);
+}
+
+.candlelight.sheet.actor.character .cl-derived > * {
+  padding: 9px 10px;
+  border: 1px solid rgba(36,93,102,.26);
+  border-radius: 4px;
+  background: rgba(21,46,50,.12);
+}
+
+.candlelight.sheet.actor.character .cl-derived strong {
+  color: #78b3bb;
+}
+
+.candlelight.sheet.actor.character .cl-stat-grid {
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  gap: 9px;
+}
+
+.candlelight.sheet.actor.character .cl-stat {
+  padding: 0;
+  border: 1px solid rgba(211,160,76,.17);
+  border-radius: 5px;
+  overflow: hidden;
+  background: rgba(7,9,10,.54);
+}
+
+.candlelight.sheet.actor.character .cl-stat > button {
+  padding: 9px 7px;
+  border: 0;
+  border-bottom: 1px solid rgba(211,160,76,.17);
+  border-radius: 0;
+  background: linear-gradient(180deg, rgba(67,49,27,.52), rgba(24,19,14,.66));
+  color: #e9dcc0;
+  text-align: left;
+}
+
+.candlelight.sheet.actor.character .cl-stat > button strong {
+  float: right;
+  color: var(--cl-gold);
+  font-size: 17px;
+}
+
+.candlelight.sheet.actor.character .cl-stat-parts {
+  padding: 6px;
+  color: var(--cl-muted);
+}
+
+.candlelight.sheet.actor.character .cl-resource-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px,1fr));
+  gap: 8px;
+}
+
+.candlelight.sheet.actor.character .cl-resource-grid label {
+  padding: 9px 10px;
+  border: 1px solid rgba(90,63,112,.28);
+  border-radius: 4px;
+  background: rgba(54,36,67,.12);
+}
+
+.candlelight.sheet.actor.character .cl-paper-doll {
+  position: relative;
+  min-height: 420px;
+  border: 1px solid rgba(211,160,76,.2);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(211,160,76,.08), transparent 34%),
+    linear-gradient(180deg, rgba(4,6,7,.72), rgba(14,15,15,.82));
+}
+
+.candlelight.sheet.actor.character .cl-doll-figure {
+  color: rgba(211,160,76,.34);
+  text-shadow: 0 0 30px rgba(211,160,76,.14);
+}
+
+.candlelight.sheet.actor.character .cl-doll-slot {
+  border-color: rgba(211,160,76,.28);
+  background: rgba(10,12,13,.82);
+}
+
+.candlelight.sheet.actor.character .items-list li,
+.candlelight.sheet.actor.character .cl-effect,
+.candlelight.sheet.actor.character .cl-feature-row {
+  border-bottom-color: rgba(211,160,76,.12);
+}
+
+.candlelight.sheet.actor.character .cl-effect.positive {
+  border-left: 3px solid #7f9c45;
+  background: rgba(72,91,39,.10);
+}
+
+.candlelight.sheet.actor.character .cl-effect.negative {
+  border-left: 3px solid #a34c50;
+  background: rgba(93,38,41,.12);
+}
+
+.candlelight.sheet.actor.character .cl-tag {
+  color: #e5d7b9;
+  border-color: rgba(211,160,76,.25);
+  background: rgba(49,36,21,.45);
+}
+
+.candlelight.sheet.actor.character .hint,
+.candlelight.sheet.actor.character .cl-future {
+  color: var(--cl-muted);
+}
+
+.candlelight.sheet.actor.character .cl-future {
+  padding: 8px 10px;
+  border-left: 2px solid var(--cl-teal);
+  background: rgba(36,93,102,.08);
+}
+
+@media (max-width: 860px) {
+  .candlelight.sheet.actor.character .cl-stat-grid {
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
+  }
+  .candlelight.sheet.actor.character .cl-resource-grid {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+  .candlelight.sheet.actor.character .cl-resources {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+/* v0.4.1: restore functional tab panels and add icon/color styling */
+.candlelight.sheet.actor.character .cl-tab-panel {
+  display: none !important;
+}
+
+.candlelight.sheet.actor.character .cl-tab-panel.active {
+  display: block !important;
+}
+
+.candlelight.sheet.actor.character .cl-portfolio-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.candlelight.sheet.actor.character .cl-portfolio-tab i {
+  font-size: 14px;
+  opacity: .92;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.candlelight.sheet.actor.character .cl-tab-core i,
+.candlelight.sheet.actor.character .cl-tab-core.active {
+  color: #e2b354;
+}
+
+.candlelight.sheet.actor.character .cl-tab-gear i,
+.candlelight.sheet.actor.character .cl-tab-gear.active {
+  color: #d8c8aa;
+}
+
+.candlelight.sheet.actor.character .cl-tab-effects i,
+.candlelight.sheet.actor.character .cl-tab-effects.active {
+  color: #c8697d;
+}
+
+.candlelight.sheet.actor.character .cl-tab-talents i,
+.candlelight.sheet.actor.character .cl-tab-talents.active {
+  color: #b88ac9;
+}
+
+.candlelight.sheet.actor.character .cl-tab-spirit i,
+.candlelight.sheet.actor.character .cl-tab-spirit.active {
+  color: #66a6b0;
+}
+
+.candlelight.sheet.actor.character .cl-tab-element i,
+.candlelight.sheet.actor.character .cl-tab-element.active {
+  color: #5ba7d0;
+}
+
+.candlelight.sheet.actor.character .cl-tab-heritage i,
+.candlelight.sheet.actor.character .cl-tab-heritage.active {
+  color: #8da85b;
+}
+
+.candlelight.sheet.actor.character .cl-portfolio-tab.active {
+  color: #fff1cf;
+}
+
+.candlelight.sheet.actor.character .cl-tab-core.active {
+  background: linear-gradient(180deg, rgba(129,88,31,.72), rgba(45,31,17,.95));
+}
+.candlelight.sheet.actor.character .cl-tab-gear.active {
+  background: linear-gradient(180deg, rgba(88,78,62,.62), rgba(30,28,25,.95));
+}
+.candlelight.sheet.actor.character .cl-tab-effects.active {
+  background: linear-gradient(180deg, rgba(100,37,51,.68), rgba(39,19,25,.95));
+}
+.candlelight.sheet.actor.character .cl-tab-talents.active {
+  background: linear-gradient(180deg, rgba(76,53,91,.70), rgba(28,20,34,.95));
+}
+.candlelight.sheet.actor.character .cl-tab-spirit.active {
+  background: linear-gradient(180deg, rgba(34,77,85,.72), rgba(15,29,32,.95));
+}
+.candlelight.sheet.actor.character .cl-tab-element.active {
+  background: linear-gradient(180deg, rgba(29,76,103,.72), rgba(14,30,40,.95));
+}
+.candlelight.sheet.actor.character .cl-tab-heritage.active {
+  background: linear-gradient(180deg, rgba(69,85,37,.72), rgba(24,31,16,.95));
+}
+
+/* Give top-level section headings a small thematic glyph treatment. */
+.candlelight.sheet.actor.character section h2::before {
+  content: "✦";
+  display: inline-block;
+  margin-right: 7px;
+  color: var(--cl-gold);
+  font-size: .72em;
+  vertical-align: 1px;
+  opacity: .85;
+}
+
+
+/* ============================================================
+   Candlelight v0.4.2 — runtime-safe portfolio tabs
+   These selectors bind to the actual sheet form, not Foundry's
+   outer window classes, so the tab strip remains visible.
+   ============================================================ */
+
+form.candlelight-sheet .cl-portfolio-tabs,
+.candlelight-sheet .cl-portfolio-tabs {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 50 !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  min-height: 45px !important;
+  box-sizing: border-box !important;
+  align-items: stretch !important;
+  gap: 3px !important;
+  margin: 0 !important;
+  padding: 5px 10px 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  border-top: 1px solid rgba(211,160,76,.20) !important;
+  border-bottom: 2px solid rgba(211,160,76,.55) !important;
+  background: linear-gradient(180deg, rgba(10,12,13,.99), rgba(20,16,12,.98)) !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,.38) !important;
+}
+
+form.candlelight-sheet .cl-portfolio-tab,
+.candlelight-sheet .cl-portfolio-tab {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  flex: 1 0 95px !important;
+  width: auto !important;
+  min-width: 95px !important;
+  height: 39px !important;
+  margin: 0 !important;
+  padding: 0 13px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  border: 1px solid rgba(211,160,76,.22) !important;
+  border-bottom: 0 !important;
+  border-radius: 6px 6px 0 0 !important;
+  background: rgba(17,19,20,.92) !important;
+  color: #c9bea7 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: .055em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.025) !important;
+}
+
+.candlelight-sheet .cl-portfolio-tab i {
+  display: inline-block !important;
+  width: 16px !important;
+  font-size: 14px !important;
+  text-align: center !important;
+  opacity: 1 !important;
+}
+
+/* Individual icon accents remain visible even on inactive tabs. */
+.candlelight-sheet .cl-tab-core i { color: #e2b354 !important; }
+.candlelight-sheet .cl-tab-gear i { color: #d8c8aa !important; }
+.candlelight-sheet .cl-tab-effects i { color: #c8697d !important; }
+.candlelight-sheet .cl-tab-talents i { color: #b88ac9 !important; }
+.candlelight-sheet .cl-tab-spirit i { color: #66a6b0 !important; }
+.candlelight-sheet .cl-tab-element i { color: #5ba7d0 !important; }
+.candlelight-sheet .cl-tab-heritage i { color: #8da85b !important; }
+
+.candlelight-sheet .cl-portfolio-tab.active {
+  color: #fff1cf !important;
+  border-color: rgba(211,160,76,.68) !important;
+  box-shadow:
+    inset 0 2px rgba(255,225,160,.12),
+    0 -2px 12px rgba(211,160,76,.08) !important;
+}
+
+.candlelight-sheet .cl-tab-core.active {
+  background: linear-gradient(180deg, #6e4b20, #302113) !important;
+}
+.candlelight-sheet .cl-tab-gear.active {
+  background: linear-gradient(180deg, #554d40, #282520) !important;
+}
+.candlelight-sheet .cl-tab-effects.active {
+  background: linear-gradient(180deg, #6b2939, #321923) !important;
+}
+.candlelight-sheet .cl-tab-talents.active {
+  background: linear-gradient(180deg, #533b63, #2b2033) !important;
+}
+.candlelight-sheet .cl-tab-spirit.active {
+  background: linear-gradient(180deg, #28535b, #172f34) !important;
+}
+.candlelight-sheet .cl-tab-element.active {
+  background: linear-gradient(180deg, #275f7c, #173547) !important;
+}
+.candlelight-sheet .cl-tab-heritage.active {
+  background: linear-gradient(180deg, #4d612c, #293519) !important;
+}
+
+/* Keep only the selected content panel visible. */
+form.candlelight-sheet .cl-tab-panel,
+.candlelight-sheet .cl-tab-panel {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+form.candlelight-sheet .cl-tab-panel.active,
+.candlelight-sheet .cl-tab-panel.active {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Make the navigation visually separate from the content below. */
+.candlelight-sheet .cl-portfolio-tabs + .cl-tab-panel.active {
+  margin-top: 0 !important;
+}
+
+/* Ensure the tab strip can't be squeezed out of the flex form. */
+.candlelight-sheet > .cl-portfolio-tabs {
+  order: 2 !important;
+}
+.candlelight-sheet > .cl-header {
+  order: 1 !important;
+}
+.candlelight-sheet > .cl-tab-panel {
+  order: 3 !important;
+}
+
+
+/* v0.4.3 statistic presentation */
+.candlelight-sheet .cl-stat-parts-clean {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  padding: 7px !important;
+}
+
+.candlelight-sheet .cl-stat-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: var(--cl-muted, #aa9f8a);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.candlelight-sheet .cl-stat-edit input {
+  width: 100% !important;
+  text-align: center;
+  font-size: 14px;
+}
+
+.candlelight-sheet .cl-stat-static {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(211,160,76,.12);
+  color: #8f8676;
+  font-size: 10px;
+}
+
+.candlelight-sheet .cl-stat-static strong {
+  margin-left: 3px;
+  color: #b9ad96;
+  font-weight: 600;
+}
+
+
+/* v0.4.4 statistics: one editable Base field, hover-only source breakdown */
+.candlelight-sheet .cl-stat-single {
+  position: relative;
+  display: block !important;
+  padding: 7px !important;
+}
+
+.candlelight-sheet .cl-stat-base {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--cl-muted, #aa9f8a);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  cursor: help;
+}
+
+.candlelight-sheet .cl-stat-base input {
+  width: 100% !important;
+  text-align: center;
+  font-size: 15px;
+}
+
+.candlelight-sheet .cl-stat-breakdown {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%) translateY(4px);
+  z-index: 100;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  min-width: 170px;
+  padding: 9px 11px;
+  border: 1px solid rgba(211,160,76,.48);
+  border-radius: 5px;
+  background: rgba(8,10,11,.97);
+  color: #d9ceb8;
+  font-size: 11px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .12s ease, transform .12s ease;
+}
+
+.candlelight-sheet .cl-stat-breakdown::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -4px) rotate(45deg);
+  border-right: 1px solid rgba(211,160,76,.48);
+  border-bottom: 1px solid rgba(211,160,76,.48);
+  background: rgba(8,10,11,.97);
+}
+
+.candlelight-sheet .cl-stat-breakdown span {
+  display: contents;
+}
+
+.candlelight-sheet .cl-stat-breakdown strong {
+  color: #f0dfbb;
+  text-align: right;
+}
+
+.candlelight-sheet .cl-stat-single:hover .cl-stat-breakdown,
+.candlelight-sheet .cl-stat-single:focus-within .cl-stat-breakdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+/* v0.4.5 statistic display/editor */
+.candlelight-sheet .cl-stat-display {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  cursor: help;
+}
+
+.candlelight-sheet .cl-stat-final {
+  color: var(--cl-gold, #d3a04c);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.candlelight-sheet .cl-stat-edit-button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 23px !important;
+  min-width: 23px !important;
+  height: 23px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #8f8676 !important;
+  opacity: .55;
+}
+
+.candlelight-sheet .cl-stat-edit-button:hover {
+  color: var(--cl-gold, #d3a04c) !important;
+  opacity: 1;
+}
+
+.candlelight .cl-stat-editor {
+  display: grid;
+  gap: 8px;
+}
+
+.candlelight .cl-stat-editor label {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  align-items: center;
+  gap: 10px;
+}
+
+.candlelight .cl-stat-editor input {
+  text-align: center;
+}
+
+
+/* v0.5.0 core sheet restructuring based on the visual mockup, using only real Candlelight fields */
+.candlelight-sheet .cl-core-hero {
+  display: grid;
+  grid-template-columns: 122px minmax(0,1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  background:
+    linear-gradient(90deg, rgba(57,35,20,.48), rgba(10,13,15,.90) 54%),
+    radial-gradient(circle at 10% 15%, rgba(211,160,76,.12), transparent 30%);
+}
+
+.candlelight-sheet .cl-core-portrait img {
+  width: 112px;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 7px;
+  border: 1px solid rgba(211,160,76,.58);
+  box-shadow: 0 0 0 3px rgba(0,0,0,.38), 0 8px 20px rgba(0,0,0,.35);
+}
+
+.candlelight-sheet .cl-kicker {
+  color: #a7977e;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+}
+
+.candlelight-sheet .cl-core-name-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.candlelight-sheet .cl-core-name-row h1 {
+  margin: 2px 0 7px;
+  color: #f1e4c7;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.candlelight-sheet .cl-status-dead {
+  color: #f0a3a6;
+  border: 1px solid rgba(145,55,58,.6);
+  border-radius: 4px;
+  padding: 5px 8px;
+  background: rgba(94,37,39,.28);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.candlelight-sheet .cl-identity-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.candlelight-sheet .cl-identity-chips span {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 4px 7px;
+  border: 1px solid rgba(211,160,76,.20);
+  border-radius: 999px;
+  color: #d6c8aa;
+  background: rgba(42,31,19,.34);
+  font-size: 10px;
+}
+
+.candlelight-sheet .cl-identity-chips i { color: #c99748; }
+
+.candlelight-sheet .cl-level-strip {
+  display: grid;
+  grid-template-columns: 150px 110px minmax(150px,1fr);
+  gap: 8px;
+}
+
+.candlelight-sheet .cl-level-strip > * {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid rgba(211,160,76,.12);
+  border-radius: 4px;
+  background: rgba(5,7,8,.42);
+  color: #9d927f;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.candlelight-sheet .cl-level-strip strong { color: #e6d7b8; font-size: 14px; }
+.candlelight-sheet .cl-level-strip input { width: 54px; text-align:center; }
+
+.candlelight-sheet .cl-vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 8px;
+}
+
+.candlelight-sheet .cl-vital {
+  display: grid;
+  grid-template-columns: 36px minmax(0,1fr);
+  gap: 9px;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid rgba(211,160,76,.15);
+  border-radius: 5px;
+  background: rgba(8,11,12,.78);
+}
+
+.candlelight-sheet .cl-vital > i {
+  text-align:center;
+  font-size: 20px;
+}
+
+.candlelight-sheet .cl-vital div { display:flex; flex-direction:column; gap:2px; }
+.candlelight-sheet .cl-vital span { color:#a99d88; font-size:10px; text-transform:uppercase; letter-spacing:.05em; }
+.candlelight-sheet .cl-vital strong { color:#f0e1c1; font-size:18px; }
+.candlelight-sheet .cl-vital small { color:#948a79; }
+.candlelight-sheet .cl-vital button { margin-top:3px; height:24px; font-size:10px; }
+.candlelight-sheet .cl-vital-hp > i { color:#c85d62; }
+.candlelight-sheet .cl-vital-ap > i { color:#e1b24f; }
+.candlelight-sheet .cl-vital-move > i { color:#70a77f; }
+.candlelight-sheet .cl-vital-init > i { color:#6ba8c7; }
+
+.candlelight-sheet .cl-core-columns {
+  display: grid;
+  grid-template-columns: minmax(0,2fr) minmax(250px,.9fr);
+  gap: 12px;
+}
+
+.candlelight-sheet .cl-stat-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(5,minmax(110px,1fr));
+  gap: 7px;
+}
+
+.candlelight-sheet .cl-stat-v2 {
+  position: relative;
+  min-height: 76px;
+  overflow: visible;
+  border: 1px solid rgba(211,160,76,.16);
+  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(41,30,18,.50), rgba(8,11,12,.74));
+}
+
+.candlelight-sheet .cl-stat-roll {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content:center;
+  gap:3px;
+  width:100%;
+  height:100%;
+  min-height:74px;
+  border:0 !important;
+  background:transparent !important;
+}
+
+.candlelight-sheet .cl-stat-name { color:#b8aa91; font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
+.candlelight-sheet .cl-stat-score { color:#e2b354; font-size:25px; font-weight:700; line-height:1; }
+
+.candlelight-sheet .cl-stat-v2 .cl-stat-edit-button {
+  top:4px;
+  right:4px;
+}
+
+.candlelight-sheet .cl-defense-panel {
+  align-self: stretch;
+}
+
+.candlelight-sheet .cl-defense-list {
+  display:grid;
+  gap:7px;
+}
+
+.candlelight-sheet .cl-defense-list > div {
+  display:grid;
+  grid-template-columns:24px 1fr auto;
+  gap:8px;
+  align-items:center;
+  padding:9px 10px;
+  border:1px solid rgba(36,93,102,.22);
+  border-radius:4px;
+  background:rgba(21,46,50,.12);
+}
+
+.candlelight-sheet .cl-defense-list i { color:#73aeb7; text-align:center; }
+.candlelight-sheet .cl-defense-list span { color:#aaa08d; font-size:11px; }
+.candlelight-sheet .cl-defense-list strong { color:#e9dcc1; font-size:16px; }
+
+.candlelight-sheet .cl-combat-actions {
+  display:grid;
+  gap:7px;
+  margin-top:10px;
+}
+
+.candlelight-sheet .cl-resource-cards {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(140px,1fr));
+  gap:8px;
+}
+
+.candlelight-sheet .cl-resource-card {
+  display:grid;
+  grid-template-columns:26px 1fr;
+  gap:7px;
+  align-items:center;
+  padding:10px;
+  border:1px solid rgba(211,160,76,.14);
+  border-radius:5px;
+  background:rgba(8,10,12,.67);
+}
+
+.candlelight-sheet .cl-resource-card i { grid-row:1/3; font-size:18px; text-align:center; }
+.candlelight-sheet .cl-resource-card span { color:#a99d88; font-size:10px; text-transform:uppercase; }
+.candlelight-sheet .cl-resource-card strong { color:#eadbbd; font-size:15px; }
+.candlelight-sheet .cl-resource-card.warrior i { color:#c16d55; }
+.candlelight-sheet .cl-resource-card.rogue i { color:#829a5a; }
+.candlelight-sheet .cl-resource-card.cleric i { color:#d5b65e; }
+.candlelight-sheet .cl-resource-card.wizard i { color:#9d79bc; }
+
+.candlelight-sheet .cl-quick-weapon {
+  grid-template-columns:38px 1fr auto !important;
+}
+.candlelight-sheet .cl-quick-weapon img { width:34px; height:34px; object-fit:cover; border-radius:4px; }
+.candlelight-sheet .cl-quick-weapon span { display:flex; flex-direction:column; }
+.candlelight-sheet .cl-quick-weapon small { color:#928876; text-transform:capitalize; }
+
+@media (max-width: 900px) {
+  .candlelight-sheet .cl-vitals-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .candlelight-sheet .cl-core-columns { grid-template-columns:1fr; }
+  .candlelight-sheet .cl-stat-grid-v2 { grid-template-columns:repeat(2,minmax(120px,1fr)); }
+  .candlelight-sheet .cl-resource-cards { grid-template-columns:repeat(2,minmax(150px,1fr)); }
+}
+
+/* v0.5.1 — canonical Spirit medallions beneath the Core portrait */
+.candlelight-sheet .cl-core-portrait {
+  position: relative;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 164px;
+  padding-bottom: 38px;
+}
+
+.candlelight-sheet .cl-core-portrait > .cl-character-portrait {
+  width: 112px;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 7px;
+  border: 1px solid rgba(211,160,76,.58);
+  box-shadow: 0 0 0 3px rgba(0,0,0,.38), 0 8px 20px rgba(0,0,0,.35);
+}
+
+.candlelight-sheet .cl-portrait-spirit {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 4;
+  filter: drop-shadow(0 5px 7px rgba(0,0,0,.72));
+}
+
+.candlelight-sheet .cl-portrait-spirit img {
+  width: 66px;
+  height: 66px;
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.candlelight-sheet .cl-portrait-spirit span {
+  max-width: 104px;
+  margin-top: -7px;
+  padding: 2px 9px 3px;
+  border: 1px solid rgba(211,160,76,.58);
+  border-radius: 3px;
+  background: rgba(5,7,8,.94);
+  color: #e4c37e;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 10px;
+  line-height: 1.1;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.candlelight-sheet .cl-feature-card .cl-spirit-feature-icon {
+  object-fit: contain;
+  background: rgba(3,5,6,.55);
+}

@@ -1,0 +1,47 @@
+<form class="{{cssClass}} candlelight-sheet" autocomplete="off">
+  <header class="cl-header"><img class="profile-img" src="{{item.img}}" data-edit="img"/><div class="cl-title"><input class="name" name="name" type="text" value="{{item.name}}"/><strong>{{item.type}}</strong></div></header>
+
+  {{#if (eq item.type "weapon")}}
+  <section class="cl-form-grid">
+    <label>Type <select name="system.weaponType">
+      <option value="improvised" {{#if (eq system.weaponType "improvised")}}selected{{/if}}>Improvised</option><option value="light" {{#if (eq system.weaponType "light")}}selected{{/if}}>Light</option><option value="hybrid" {{#if (eq system.weaponType "hybrid")}}selected{{/if}}>Hybrid</option><option value="medium" {{#if (eq system.weaponType "medium")}}selected{{/if}}>Medium</option><option value="heavy" {{#if (eq system.weaponType "heavy")}}selected{{/if}}>Heavy</option><option value="pole" {{#if (eq system.weaponType "pole")}}selected{{/if}}>Pole</option><option value="ranged" {{#if (eq system.weaponType "ranged")}}selected{{/if}}>Ranged</option>
+    </select></label>
+    <label>Base Damage <input name="system.damage" type="text" value="{{system.damage}}"/></label>
+    <label>Armor Pen <input name="system.armorPenetration" type="number" min="0" value="{{system.armorPenetration}}"/></label>
+    <label>MW Result Mod <input name="system.massiveWoundResultModifier" type="number" value="{{system.massiveWoundResultModifier}}"/></label>
+    <label>MW Magnitude Mod <input name="system.massiveWoundMagnitudeModifier" type="number" value="{{system.massiveWoundMagnitudeModifier}}"/></label>
+    <label>Other Damage Mod <input name="system.damageModifier" type="number" value="{{system.damageModifier}}"/></label>
+    <label><input name="system.magical" type="checkbox" {{checked system.magical}}/> Magical</label>
+    <label><input name="system.dragonfire" type="checkbox" {{checked system.dragonfire}}/> Dragonfire</label>
+    <label><input name="system.spellAttack" type="checkbox" {{checked system.spellAttack}}/> Spell Attack</label>
+    <label><input name="system.equipped" type="checkbox" {{checked system.equipped}}/> Equipped</label>
+  </section>
+  {{/if}}
+
+  {{#if (eq item.type "armor")}}
+  <section class="cl-form-grid">
+    <label>Location <select name="system.location"><option value="leftLeg" {{#if (eq system.location "leftLeg")}}selected{{/if}}>Left Leg</option><option value="rightLeg" {{#if (eq system.location "rightLeg")}}selected{{/if}}>Right Leg</option><option value="leftArm" {{#if (eq system.location "leftArm")}}selected{{/if}}>Left Arm</option><option value="rightArm" {{#if (eq system.location "rightArm")}}selected{{/if}}>Right Arm</option><option value="torso" {{#if (eq system.location "torso")}}selected{{/if}}>Torso</option><option value="head" {{#if (eq system.location "head")}}selected{{/if}}>Head</option></select></label>
+    <label>Armor DR <input name="system.dr" type="number" min="0" value="{{system.dr}}"/></label>
+    <label><input name="system.equipped" type="checkbox" {{checked system.equipped}}/> Equipped</label>
+    <label><input name="system.canBlock" type="checkbox" {{checked system.canBlock}}/> Enables Block</label>
+  </section>
+  {{/if}}
+
+  {{#if (eq item.type "equipment")}}
+  <section class="cl-form-grid">
+    <label><input name="system.equipped" type="checkbox" {{checked system.equipped}}/> Equipped</label>
+    <label><input name="system.canBlock" type="checkbox" {{checked system.canBlock}}/> Enables Block</label>
+  </section>
+  {{/if}}
+
+  {{#if (eq item.type "ability")}}
+  <section class="cl-form-grid">
+    <label><input name="system.grantsChallengeReroll" type="checkbox" {{checked system.grantsChallengeReroll}}/> Grants Challenge Reroll</label>
+  </section>
+  {{/if}}
+
+  <section><h2>Description</h2><textarea name="system.description" rows="12">{{system.description}}</textarea></section>
+  <footer class="cl-sheet-footer">
+    <button type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Item</button>
+  </footer>
+</form>

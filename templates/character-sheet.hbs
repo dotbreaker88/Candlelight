@@ -1,0 +1,158 @@
+<form class="{{cssClass}} candlelight-sheet" autocomplete="off">
+<header class="cl-header"><div class="cl-brand"><span class="cl-brand-flame">✦</span><span>CANDLELIGHT</span></div><img class="profile-img" src="{{actor.img}}" data-edit="img"/><div class="cl-title"><input class="name" name="name" type="text" value="{{actor.name}}"/><div class="cl-summary"><label>Level <input name="system.level" type="number" min="1" max="20" value="{{system.level}}"/></label><span>Tier <strong>{{cl.tier}}</strong></span><span>Universal Difficulty <strong>{{cl.universalDifficulty}}</strong></span>{{#if system.state.dead}}<span class="cl-dead"><strong>DEAD — {{system.state.deathCause}}</strong></span>{{/if}}</div></div></header>
+<nav class="cl-portfolio-tabs" role="tablist" aria-label="Candlelight Character Sections">
+  <button type="button" class="cl-portfolio-tab cl-tab-core active" data-tab-button="core" role="tab" aria-selected="true"><i class="fa-solid fa-sun"></i><span>Core</span></button>
+  <button type="button" class="cl-portfolio-tab cl-tab-gear" data-tab-button="gear" role="tab" aria-selected="false"><i class="fa-solid fa-shield-halved"></i><span>Gear</span></button>
+  <button type="button" class="cl-portfolio-tab cl-tab-effects" data-tab-button="effects" role="tab" aria-selected="false"><i class="fa-solid fa-droplet"></i><span>Effects</span></button>
+  <button type="button" class="cl-portfolio-tab cl-tab-talents" data-tab-button="talents" role="tab" aria-selected="false"><i class="fa-solid fa-sparkles"></i><span>Talents</span></button>
+  <button type="button" class="cl-portfolio-tab cl-tab-spirit" data-tab-button="spirit" role="tab" aria-selected="false"><i class="fa-solid fa-paw"></i><span>Spirit</span></button>
+  <button type="button" class="cl-portfolio-tab cl-tab-element" data-tab-button="element" role="tab" aria-selected="false"><i class="fa-solid fa-fire-flame-curved"></i><span>Element</span></button>
+  <button type="button" class="cl-portfolio-tab cl-tab-heritage" data-tab-button="heritage" role="tab" aria-selected="false"><i class="fa-solid fa-tree"></i><span>Heritage</span></button>
+</nav>
+
+<div class="cl-tab-panel active" data-tab-panel="core">
+  <section class="cl-core-hero">
+    <div class="cl-core-portrait">
+      <img class="cl-character-portrait" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+      {{#if cl.spiritIcon}}
+      <div class="cl-portrait-spirit" title="{{cl.spirit.name}} Spirit">
+        <img src="{{cl.spiritIcon}}" alt="{{cl.spirit.name}} Spirit icon"/>
+        <span>{{cl.spirit.name}}</span>
+      </div>
+      {{/if}}
+    </div>
+
+    <div class="cl-core-identity">
+      <div class="cl-core-name-row">
+        <div>
+          <span class="cl-kicker">Character</span>
+          <h1>{{actor.name}}</h1>
+        </div>
+        {{#if system.state.dead}}<span class="cl-status-dead">DEAD — {{system.state.deathCause}}</span>{{/if}}
+      </div>
+
+      <div class="cl-identity-chips">
+        {{#if cl.heritage}}<span><i class="fa-solid fa-tree"></i>{{cl.heritage.name}}</span>{{/if}}
+        {{#if cl.theme}}<span><i class="fa-solid fa-shield-halved"></i>{{cl.theme.name}}</span>{{/if}}
+        {{#if cl.spirit}}<span><i class="fa-solid fa-paw"></i>{{cl.spirit.name}}</span>{{/if}}
+        {{#if cl.element}}<span><i class="fa-solid fa-fire-flame-curved"></i>{{cl.element.name}}</span>{{/if}}
+        {{#each cl.classes as |item|}}<span><i class="fa-solid fa-diamond"></i>{{item.name}}</span>{{/each}}
+      </div>
+
+      <div class="cl-level-strip">
+        <label><span>Level</span><input name="system.level" type="number" min="1" max="20" value="{{system.level}}"/></label>
+        <div><span>Tier</span><strong>{{cl.tier}}</strong></div>
+        <div><span>Universal Difficulty</span><strong>{{cl.universalDifficulty}}</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cl-vitals-grid">
+    <div class="cl-vital cl-vital-hp">
+      <i class="fa-solid fa-heart"></i>
+      <div><span>Health</span><strong>{{system.health.value}} / {{system.health.max}}</strong><small>Temp {{system.health.temp}}</small></div>
+    </div>
+    <div class="cl-vital cl-vital-ap">
+      <i class="fa-solid fa-bolt"></i>
+      <div><span>Action Points</span><strong>{{system.actionPoints.value}} / 3</strong></div>
+    </div>
+    <div class="cl-vital cl-vital-move">
+      <i class="fa-solid fa-person-running"></i>
+      <div><span>Movement</span><strong>{{cl.movement}}</strong></div>
+    </div>
+    <div class="cl-vital cl-vital-init">
+      <i class="fa-solid fa-forward-fast"></i>
+      <div><span>Initiative</span><strong>1d10 + {{system.statistics.speed.base}}</strong><button type="button" data-action="initiative">Roll</button></div>
+    </div>
+  </section>
+
+  <div class="cl-core-columns">
+    <section class="cl-stat-section">
+      <div class="cl-section-heading"><h2>Statistics</h2><span class="hint">Click a score to roll. Hover for sources.</span></div>
+      <div class="cl-stat-grid cl-stat-grid-v2">
+        {{#each cl.stats as |stat|}}
+        <div class="cl-stat cl-stat-v2">
+          <button type="button" class="cl-stat-roll" data-action="roll-stat" data-stat="{{stat.key}}">
+            <span class="cl-stat-name">{{stat.label}}</span>
+            <span class="cl-stat-score">{{stat.total}}</span>
+          </button>
+          <button type="button" class="cl-stat-edit-button" data-action="edit-stat" data-stat="{{stat.key}}" title="Edit {{stat.label}} sources">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <div class="cl-stat-breakdown" aria-hidden="true">
+            <span>Base <strong>{{stat.data.base}}</strong></span>
+            <span>Heritage <strong>{{stat.data.heritage}}</strong></span>
+            <span>Theme <strong>{{stat.data.theme}}</strong></span>
+            <span>Temporary <strong>{{stat.data.other}}</strong></span>
+            <span>Final <strong>{{stat.total}}</strong></span>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </section>
+
+    <section class="cl-defense-panel">
+      <h2>Defenses & Combat</h2>
+      <div class="cl-defense-list">
+        <div><i class="fa-solid fa-shield"></i><span>Innate DR</span><strong>{{cl.innateDR}}</strong></div>
+        <div><i class="fa-solid fa-shield-heart"></i><span>Universal DR</span><strong>{{system.universalDR}}</strong></div>
+        <div><i class="fa-solid fa-person-running"></i><span>Movement</span><strong>{{cl.movement}}</strong></div>
+        <div><i class="fa-solid fa-bullseye"></i><span>Universal Test</span><strong>{{cl.universalDifficulty}}</strong></div>
+      </div>
+
+      <div class="cl-combat-actions">
+        <button type="button" data-action="initiative"><i class="fa-solid fa-bolt"></i> Roll Initiative</button>
+        <button type="button" data-action="full-rest"><i class="fa-solid fa-bed"></i> Full Rest</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="cl-resource-section">
+    <h2>Class Resources</h2>
+    <div class="cl-resource-cards">
+      <div class="cl-resource-card warrior"><i class="fa-solid fa-sword"></i><span>Technique</span><strong>{{system.resources.technique.value}} / {{system.resources.technique.max}}</strong></div>
+      <div class="cl-resource-card rogue"><i class="fa-solid fa-mask-face"></i><span>Guile</span><strong>{{system.resources.guile.value}} / {{system.resources.guile.max}}</strong></div>
+      <div class="cl-resource-card cleric"><i class="fa-solid fa-sun"></i><span>Cleric Slots</span><strong>{{system.resources.clericSlots.value}} / {{system.resources.clericSlots.max}}</strong></div>
+      <div class="cl-resource-card wizard"><i class="fa-solid fa-wand-sparkles"></i><span>Wizard Slots</span><strong>{{system.resources.wizardSlots.value}} / {{system.resources.wizardSlots.max}}</strong></div>
+    </div>
+  </section>
+
+  <section class="cl-quick-gear">
+    <div class="cl-section-heading"><h2>Readied Weapons</h2><span class="hint">Use Gear tab for full inventory.</span></div>
+    <ol class="items-list">
+      {{#each cl.weapons as |item|}}
+        {{#if item.system.equipped}}
+        <li class="cl-quick-weapon">
+          <img src="{{item.img}}"/>
+          <span><strong>{{item.name}}</strong><small>{{item.system.weaponType}} · {{item.system.damage}} · AP {{item.system.armorPenetration}}</small></span>
+          <span class="cl-item-actions"><button type="button" data-action="attack" data-item-id="{{item.id}}"><i class="fa-solid fa-crosshairs"></i> Attack</button></span>
+        </li>
+        {{/if}}
+      {{else}}
+        <li class="hint">No weapons on the character.</li>
+      {{/each}}
+    </ol>
+  </section>
+</div>
+
+<div class="cl-tab-panel" data-tab-panel="gear">
+<section><h2>Paper Doll</h2><div class="cl-paper-doll">
+  {{#each cl.armorLocations as |slot|}}<div class="cl-doll-slot slot-{{slot.key}}"><strong>{{slot.label}}</strong>{{#if slot.item}}<img src="{{slot.item.img}}"/><span>{{slot.item.name}}</span><small>DR {{slot.item.system.dr}}</small><button type="button" data-action="toggle-equip" data-item-id="{{slot.item.id}}">Unequip</button>{{else}}<span class="empty">Empty</span>{{/if}}</div>{{/each}}
+  <div class="cl-doll-figure"><i class="fa-solid fa-person"></i></div>
+</div></section>
+<section><h2>Equipped Gear</h2><div class="cl-tags">{{#each cl.equippedGear as |item|}}<span class="cl-tag"><img src="{{item.img}}"/> {{item.name}}</span>{{else}}<span class="hint">No other gear equipped.</span>{{/each}}</div></section>
+<section><h2>Inventory</h2><ol class="items-list cl-inventory">{{#each cl.inventory as |item|}}<li><img src="{{item.img}}"/><span><strong>{{item.name}}</strong><small>{{item.type}}{{#if item.system.equipped}} · Equipped{{/if}}</small></span><span class="cl-item-actions">{{#if (eq item.type "weapon")}}<button type="button" data-action="attack" data-item-id="{{item.id}}">Attack</button>{{/if}}<button type="button" data-action="toggle-equip" data-item-id="{{item.id}}">{{#if item.system.equipped}}Unequip{{else}}Equip{{/if}}</button><button type="button" data-action="edit-item" data-item-id="{{item.id}}">Edit</button><button type="button" data-action="drop-item" data-item-id="{{item.id}}">Drop</button><button type="button" data-action="delete-item" data-item-id="{{item.id}}" title="Remove permanently"><i class="fa-solid fa-trash"></i></button></span></li>{{else}}<li class="hint">No equipment.</li>{{/each}}</ol></section>
+</div>
+
+<div class="cl-tab-panel" data-tab-panel="effects">
+<section><div class="cl-section-heading"><h2>Ongoing Effects</h2><span><button type="button" data-action="create-candlelight-effect" data-effect-key="embolden">+ Embolden</button> <button type="button" data-action="create-candlelight-effect" data-effect-key="dishearten">+ Dishearten</button> <button type="button" data-action="create-effect" data-polarity="positive">+ Positive</button> <button type="button" data-action="create-effect" data-polarity="negative">+ Negative</button> <button type="button" data-action="create-effect" data-polarity="neutral">+ Other</button></span></div>
+<div class="cl-effect-columns"><div><h3>Positive</h3>{{#each cl.positiveEffects as |effect|}}<div class="cl-effect positive"><img src="{{effect.img}}"/><span>{{effect.name}}{{#if effect.disabled}} <small>(disabled)</small>{{/if}}</span><span><button type="button" data-action="toggle-effect" data-effect-id="{{effect.id}}">On/Off</button><button type="button" data-action="edit-effect" data-effect-id="{{effect.id}}">Edit</button><button type="button" data-action="delete-effect" data-effect-id="{{effect.id}}">×</button></span></div>{{else}}<p class="hint">None.</p>{{/each}}</div><div><h3>Negative</h3>{{#each cl.negativeEffects as |effect|}}<div class="cl-effect negative"><img src="{{effect.img}}"/><span>{{effect.name}}{{#if effect.disabled}} <small>(disabled)</small>{{/if}}</span><span><button type="button" data-action="toggle-effect" data-effect-id="{{effect.id}}">On/Off</button><button type="button" data-action="edit-effect" data-effect-id="{{effect.id}}">Edit</button><button type="button" data-action="delete-effect" data-effect-id="{{effect.id}}">×</button></span></div>{{else}}<p class="hint">None.</p>{{/each}}</div></div>
+{{#if cl.neutralEffects.length}}<h3>Other</h3>{{#each cl.neutralEffects as |effect|}}<div class="cl-effect"><img src="{{effect.img}}"/><span>{{effect.name}}</span><span><button type="button" data-action="edit-effect" data-effect-id="{{effect.id}}">Edit</button><button type="button" data-action="delete-effect" data-effect-id="{{effect.id}}">×</button></span></div>{{/each}}{{/if}}
+</section></div>
+
+<div class="cl-tab-panel" data-tab-panel="talents"><section><h2>Talents</h2><ol class="items-list">{{#each cl.talents as |item|}}<li><img src="{{item.img}}"/><span><strong>{{item.name}}</strong><small>{{item.system.sourceName}}</small></span><span class="cl-item-actions"><button type="button" data-action="edit-item" data-item-id="{{item.id}}">Details</button><button type="button" data-action="delete-item" data-item-id="{{item.id}}">×</button></span></li>{{else}}<li class="hint">No Talents yet. This tab will later host Talent level-up choices.</li>{{/each}}</ol></section></div>
+
+<div class="cl-tab-panel" data-tab-panel="spirit"><section><h2>Spirit</h2>{{#if cl.spirit}}<div class="cl-feature-card">{{#if cl.spiritIcon}}<img class="cl-spirit-feature-icon" src="{{cl.spiritIcon}}" alt="{{cl.spirit.name}} Spirit icon"/>{{else}}<img src="{{cl.spirit.img}}"/>{{/if}}<div><h3>{{cl.spirit.name}}</h3><div>{{{cl.spirit.system.description}}}</div><button type="button" data-action="edit-item" data-item-id="{{cl.spirit.id}}">Details</button></div></div>{{else}}<p class="hint">No Spirit assigned.</p>{{/if}}<h3>Spirit Abilities</h3>{{#each cl.spiritAbilities as |item|}}<div class="cl-feature-row"><strong>{{item.name}}</strong><button type="button" data-action="edit-item" data-item-id="{{item.id}}">Details</button></div>{{else}}<p class="hint">No Spirit abilities selected.</p>{{/each}}<p class="cl-future">Future: available Spirit level-up choices will appear here.</p></section></div>
+<div class="cl-tab-panel" data-tab-panel="element"><section><h2>Element</h2>{{#if cl.element}}<div class="cl-feature-card"><img src="{{cl.element.img}}"/><div><h3>{{cl.element.name}}</h3><div>{{{cl.element.system.description}}}</div><button type="button" data-action="edit-item" data-item-id="{{cl.element.id}}">Details</button></div></div>{{else}}<p class="hint">No Element assigned.</p>{{/if}}<h3>Elemental Powers</h3>{{#each cl.elementAbilities as |item|}}<div class="cl-feature-row"><strong>{{item.name}}</strong><button type="button" data-action="edit-item" data-item-id="{{item.id}}">Details</button></div>{{else}}<p class="hint">No Elemental powers selected.</p>{{/each}}<p class="cl-future">Future: available Element level-up choices will appear here.</p></section></div>
+<div class="cl-tab-panel" data-tab-panel="heritage"><section><h2>Heritage</h2>{{#if cl.heritage}}<div class="cl-feature-card"><img src="{{cl.heritage.img}}"/><div><h3>{{cl.heritage.name}}</h3><div>{{{cl.heritage.system.description}}}</div><button type="button" data-action="edit-item" data-item-id="{{cl.heritage.id}}">Details</button></div></div>{{else}}<p class="hint">No Heritage assigned.</p>{{/if}}<h3>Heritage Benefits</h3>{{#each cl.heritageAbilities as |item|}}<div class="cl-feature-row"><strong>{{item.name}}</strong><button type="button" data-action="edit-item" data-item-id="{{item.id}}">Details</button></div>{{else}}<p class="hint">No Heritage benefits selected.</p>{{/each}}<p class="cl-future">Future: available Heritage level-up choices will appear here.</p></section></div>
+</form>
