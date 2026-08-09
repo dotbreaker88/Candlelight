@@ -24,7 +24,7 @@
 
 /* The Spirit artwork sits inside the measured circular opening, under the rendered silver ring. */
 .candlelight-sheet .cl-core-portrait .cl-portrait-spirit{position:absolute!important;left:168px!important;top:323px!important;bottom:auto!important;z-index:9!important;width:76px!important;height:136px!important;min-height:0!important;transform:translateX(-50%)!important;display:block!important;pointer-events:none!important;filter:none!important}
-.candlelight-sheet .cl-core-portrait .cl-spirit-canvas{position:absolute!important;left:50%!important;top:0!important;width:76px!important;height:76px!important;transform:translateX(-50%)!important;display:block!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.85)) drop-shadow(0 0 3px var(--cl-frame-glow))!important}
+.candlelight-sheet .cl-core-portrait .cl-spirit-canvas{position:absolute!important;left:50%!important;top:-4px!important;width:76px!important;height:76px!important;transform:translateX(-50%)!important;display:block!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.85)) drop-shadow(0 0 3px var(--cl-frame-glow))!important}
 .candlelight-sheet .cl-core-portrait .cl-spirit-medallion,.candlelight-sheet .cl-core-portrait .cl-spirit-medallion-inner{display:contents!important}
 
 /* Dynamic Spirit name over the blank rendered plaque. */
