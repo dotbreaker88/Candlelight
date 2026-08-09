@@ -1,0 +1,62 @@
+name: Build Foundry Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: candlelight-release
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read system version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(python -c "import json; print(json.load(open('system.json'))['version'])")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Validate Foundry manifest
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('system.json').read_text())
+          required = ['id', 'title', 'version', 'manifest', 'download']
+          missing = [key for key in required if not data.get(key)]
+          if missing:
+              raise SystemExit(f"Missing required manifest keys: {', '.join(missing)}")
+          PY
+
+      - name: Build Foundry install archive
+        shell: bash
+        run: |
+          rm -f candlelight.zip
+          zip -r candlelight.zip . -x '.git/*' '.github/*' 'candlelight.zip' '*.DS_Store'
+          unzip -l candlelight.zip | grep -q ' system.json$'
+
+      - name: Publish or refresh GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Candlelight ${{ steps.version.outputs.version }}
+          body: |
+            Automated Foundry VTT system release for Candlelight ${{ steps.version.outputs.version }}.
+          make_latest: true
+          generate_release_notes: true
+          files: |
+            candlelight.zip
+            system.json
+          overwrite_files: true
