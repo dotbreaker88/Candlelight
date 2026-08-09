@@ -6,7 +6,7 @@ import {CandlelightRolls} from "./rolls.mjs";
 import {CandlelightLoot} from "./loot.mjs";
 
 Hooks.once("init",()=>{
-  console.log("Candlelight | Initializing v0.5.8");
+  console.log("Candlelight | Initializing v0.5.9");
   CONFIG.Actor.documentClass=CandlelightActor; CONFIG.Item.documentClass=CandlelightItem;
   CONFIG.Actor.dataModels={character:CharacterData,loot:LootData};
   CONFIG.Item.dataModels={weapon:WeaponData,armor:ArmorData,accessory:EquipmentData,equipment:EquipmentData,ability:AbilityData,talent:TalentData,heritage:HeritageData,theme:ThemeData,class:ClassData,spirit:SpiritData,element:ElementData,massiveWound:MassiveWoundData};
