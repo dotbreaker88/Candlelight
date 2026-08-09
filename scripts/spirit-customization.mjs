@@ -34,11 +34,6 @@ function bindSelect(select, value, updatePath, actor, root) {
     event.preventDefault();
     event.stopImmediatePropagation();
     const next = event.currentTarget.value;
-
-    // Keep these customization changes surgical. A normal Actor update rerenders
-    // the legacy AppV1 sheet, which destroys these injected controls before the
-    // visual refresh can complete. Persist without rendering, then update the
-    // current DOM directly.
     await actor.update({[updatePath]: next}, {render: false});
     syncControls(root, actor);
     updatePortrait(root, actor);
@@ -68,12 +63,8 @@ function ensureControls(root, actor) {
     }
   }
 
-  for (const select of root.querySelectorAll("[data-cl-spirit-select]")) {
-    bindSelect(select, key, "system.spiritKey", actor, root);
-  }
-  for (const select of root.querySelectorAll("[data-cl-frame-select]")) {
-    bindSelect(select, color, "system.portraitFrameColor", actor, root);
-  }
+  for (const select of root.querySelectorAll("[data-cl-spirit-select]")) bindSelect(select, key, "system.spiritKey", actor, root);
+  for (const select of root.querySelectorAll("[data-cl-frame-select]")) bindSelect(select, color, "system.portraitFrameColor", actor, root);
 }
 
 function neutralizeDuplicateLevelField(root) {
@@ -111,7 +102,14 @@ function updatePortrait(root, actor) {
   }
   medallion.title = `${label} Spirit`;
   medallion.innerHTML = `
-    <span class="cl-portrait-spirit-icon" role="img" aria-label="${label} Spirit icon" style="--cl-spirit-mask:url(${icon})"></span>
+    <span class="cl-spirit-medallion" aria-hidden="true">
+      <span class="cl-spirit-finial cl-spirit-finial-left"></span>
+      <span class="cl-spirit-finial cl-spirit-finial-right"></span>
+      <span class="cl-spirit-medallion-inner">
+        <img class="cl-spirit-icon-fallback" src="${icon}" alt="" />
+        <span class="cl-portrait-spirit-icon" role="img" aria-label="${label} Spirit icon" style="--cl-spirit-mask:url(&quot;${icon}&quot;)"></span>
+      </span>
+    </span>
     <span class="cl-portrait-spirit-name">${label}</span>`;
 }
 
@@ -128,7 +126,7 @@ function updateSpiritTab(root, actor) {
   const oldIcon = feature.querySelector("img, .cl-spirit-feature-mask");
   const mask = document.createElement("span");
   mask.className = "cl-spirit-feature-mask";
-  mask.style.setProperty("--cl-spirit-mask", `url(${getSpiritIcon(key)})`);
+  mask.style.setProperty("--cl-spirit-mask", `url("${getSpiritIcon(key)}")`);
   mask.setAttribute("role", "img");
   mask.setAttribute("aria-label", `${getSpiritLabel(key)} Spirit icon`);
   oldIcon?.replaceWith(mask);
