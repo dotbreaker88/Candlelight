@@ -79,31 +79,44 @@ function ensurePortraitOrnaments(portrait) {
   ornaments.className = "cl-portrait-frame-ornaments";
   ornaments.setAttribute("aria-hidden", "true");
   ornaments.innerHTML = `
-    <span class="cl-frame-crown"><i></i><b></b></span>
-    <span class="cl-frame-shoulder cl-frame-shoulder-left"><i></i></span>
-    <span class="cl-frame-shoulder cl-frame-shoulder-right"><i></i></span>
-    <span class="cl-frame-rail cl-frame-rail-left"><i></i><b></b></span>
-    <span class="cl-frame-rail cl-frame-rail-right"><i></i><b></b></span>
-    <span class="cl-frame-scroll cl-frame-scroll-left"></span>
-    <span class="cl-frame-scroll cl-frame-scroll-right"></span>
-    <span class="cl-frame-pedestal"><i></i><b></b></span>`;
+    <span class="cl-frame-arch"><i></i><b></b></span>
+    <span class="cl-frame-crown"><i></i><b></b><em></em></span>
+    <span class="cl-frame-wing cl-frame-wing-left"><i></i><b></b></span>
+    <span class="cl-frame-wing cl-frame-wing-right"><i></i><b></b></span>
+    <span class="cl-frame-rail cl-frame-rail-left"><i></i><b></b><em></em></span>
+    <span class="cl-frame-rail cl-frame-rail-right"><i></i><b></b><em></em></span>
+    <span class="cl-frame-tracery cl-frame-tracery-left"><i></i></span>
+    <span class="cl-frame-tracery cl-frame-tracery-right"><i></i></span>
+    <span class="cl-frame-scroll cl-frame-scroll-left"><i></i></span>
+    <span class="cl-frame-scroll cl-frame-scroll-right"><i></i></span>
+    <span class="cl-frame-pedestal"><i></i><b></b><em></em></span>`;
   portrait.prepend(ornaments);
   return ornaments;
 }
 
-function alphaBounds(ctx, width, height) {
+function alphaMetrics(ctx, width, height) {
   const {data} = ctx.getImageData(0, 0, width, height);
   let minX = width, minY = height, maxX = -1, maxY = -1;
+  let mass = 0, weightedX = 0, weightedY = 0;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      if (data[(y * width + x) * 4 + 3] < 8) continue;
+      const alpha = data[(y * width + x) * 4 + 3];
+      if (alpha < 8) continue;
       if (x < minX) minX = x;
       if (x > maxX) maxX = x;
       if (y < minY) minY = y;
       if (y > maxY) maxY = y;
+      const weight = alpha / 255;
+      mass += weight;
+      weightedX += x * weight;
+      weightedY += y * weight;
     }
   }
-  return maxX >= minX && maxY >= minY ? {x:minX, y:minY, width:maxX-minX+1, height:maxY-minY+1} : null;
+  if (maxX < minX || maxY < minY || !mass) return null;
+  return {
+    x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1,
+    centroidX: weightedX / mass, centroidY: weightedY / mass
+  };
 }
 
 function tintCanvas(canvas, src, tint) {
@@ -124,19 +137,28 @@ function tintCanvas(canvas, src, tint) {
     const sctx = scratch.getContext("2d", {willReadFrequently:true});
     if (!sctx) return;
     sctx.drawImage(image, 0, 0);
-    const bounds = alphaBounds(sctx, scratch.width, scratch.height) ?? {x:0,y:0,width:scratch.width,height:scratch.height};
+    const m = alphaMetrics(sctx, scratch.width, scratch.height) ?? {
+      x:0, y:0, width:scratch.width, height:scratch.height,
+      centroidX:scratch.width / 2, centroidY:scratch.height / 2
+    };
+
+    const pad = Math.max(7, Math.round(size * 0.12));
+    const avail = size - pad * 2;
+    const scale = Math.min(avail / m.width, avail / m.height);
+    const width = m.width * scale;
+    const height = m.height * scale;
+
+    // Center the actual alpha mass, not the source canvas or bounding box.
+    // A tiny downward optical bias keeps animal heads from appearing top-heavy.
+    let x = size / 2 - (m.centroidX - m.x) * scale;
+    let y = size / 2 - (m.centroidY - m.y) * scale + size * 0.015;
+    const overflow = 2;
+    x = Math.min(size - width + overflow, Math.max(-overflow, x));
+    y = Math.min(size - height + overflow, Math.max(-overflow, y));
 
     out.clearRect(0, 0, size, size);
-    const pad = Math.max(7, Math.round(size * 0.1));
-    const avail = size - pad * 2;
-    const scale = Math.min(avail / bounds.width, avail / bounds.height);
-    const width = bounds.width * scale;
-    const height = bounds.height * scale;
-    const x = (size - width) / 2;
-    const y = (size - height) / 2;
-
     out.save();
-    out.drawImage(scratch, bounds.x, bounds.y, bounds.width, bounds.height, x, y, width, height);
+    out.drawImage(scratch, m.x, m.y, m.width, m.height, x, y, width, height);
     out.globalCompositeOperation = "source-in";
     out.fillStyle = tint;
     out.fillRect(0, 0, size, size);
@@ -173,7 +195,7 @@ function updatePortrait(root, actor) {
   medallion.title = `${label} Spirit`;
   medallion.innerHTML = `
     <span class="cl-spirit-medallion" aria-hidden="true">
-      <span class="cl-spirit-medallion-inner"><canvas class="cl-spirit-canvas" data-size="88" role="img" aria-label="${label} Spirit icon"></canvas></span>
+      <span class="cl-spirit-medallion-inner"><canvas class="cl-spirit-canvas" data-size="80" role="img" aria-label="${label} Spirit icon"></canvas></span>
     </span>
     <span class="cl-portrait-spirit-name">${label}</span>`;
   tintCanvas(medallion.querySelector(".cl-spirit-canvas"), icon, FRAME_HEX[color]);
