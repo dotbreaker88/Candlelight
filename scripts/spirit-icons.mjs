@@ -1,41 +1,43 @@
-/**
- * Canonical character-sheet icon assets for Candlelight Spirits.
- *
- * Spirit Items are currently identified by their display name. Keeping the
- * resolver centralized means a future character-creation workflow can move to
- * a stored key without requiring template changes.
- */
-const SPIRIT_KEYS = new Set([
-  "ant", "axolotl", "badger", "bat", "bear", "dragon", "fox", "hawk",
-  "lion", "mantis", "mongoose", "monkey", "ox", "rabbit", "rat", "shark",
-  "snake", "sphinx", "spider", "stag", "turtle", "vulture", "wolf",
-  "phoenix", "barguest", "golem", "exile", "kraken", "thunderbird", "unicorn"
-]);
-
-const SPIRIT_ALIASES = Object.freeze({
-  barghest: "barguest"
+/** Canonical Spirit presentation data for Candlelight characters. */
+const SPIRITS = Object.freeze({
+  ant: "Ant", axolotl: "Axolotl", badger: "Badger", bat: "Bat", bear: "Bear",
+  dragon: "Dragon", fox: "Fox", hawk: "Hawk", lion: "Lion", mantis: "Mantis",
+  mongoose: "Mongoose", monkey: "Monkey", ox: "Ox", rabbit: "Rabbit", rat: "Rat",
+  shark: "Shark", snake: "Snake", sphinx: "Sphinx", spider: "Spider", stag: "Stag",
+  turtle: "Turtle", vulture: "Vulture", wolf: "Wolf", phoenix: "Phoenix",
+  barguest: "Barguest", golem: "Golem", exile: "Exile", kraken: "Kraken",
+  thunderbird: "Thunderbird", unicorn: "Unicorn"
 });
 
-function normalizeSpiritKey(value) {
+const SPIRIT_ALIASES = Object.freeze({barghest: "barguest"});
+
+export const CANDLELIGHT_FRAME_COLORS = Object.freeze({
+  purple: "Purple", gold: "Gold", red: "Red", blue: "Blue", green: "Green", teal: "Teal"
+});
+
+export function normalizeSpiritKey(value) {
   return String(value ?? "")
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "")
-    .replace(/^spirit/, "")
-    .replace(/spirit$/, "");
+    .trim().toLowerCase().replace(/[^a-z0-9]+/g, "")
+    .replace(/^spirit/, "").replace(/spirit$/, "");
 }
 
-export function getSpiritIcon(spirit) {
-  if (!spirit) return null;
-
-  // Prefer a future explicit key if one is added to Spirit data, while keeping
-  // v0.5.x fully compatible with existing Spirit Items that only have a name.
-  const explicitKey = spirit.system?.spiritKey;
-  let key = normalizeSpiritKey(explicitKey || spirit.name);
+export function getSpiritKey(spiritOrKey) {
+  if (!spiritOrKey) return "";
+  const raw = typeof spiritOrKey === "string" ? spiritOrKey : (spiritOrKey.system?.spiritKey || spiritOrKey.name);
+  let key = normalizeSpiritKey(raw);
   key = SPIRIT_ALIASES[key] ?? key;
-
-  if (!SPIRIT_KEYS.has(key)) return null;
-  return `systems/candlelight/assets/icons/spirits/${key}.webp`;
+  return Object.hasOwn(SPIRITS, key) ? key : "";
 }
 
-export const CANDLELIGHT_SPIRIT_KEYS = Object.freeze([...SPIRIT_KEYS]);
+export function getSpiritIcon(spiritOrKey) {
+  const key = getSpiritKey(spiritOrKey);
+  return key ? `systems/candlelight/assets/icons/spirits/${key}.webp` : null;
+}
+
+export function getSpiritLabel(spiritOrKey) {
+  const key = getSpiritKey(spiritOrKey);
+  return key ? SPIRITS[key] : "";
+}
+
+export const CANDLELIGHT_SPIRITS = SPIRITS;
+export const CANDLELIGHT_SPIRIT_KEYS = Object.freeze(Object.keys(SPIRITS));

@@ -1,0 +1,55 @@
+/* v0.5.2 Spirit selector and recolorable portrait presentation */
+.candlelight-sheet .cl-core-portrait,
+.candlelight-sheet .cl-feature-card[class*="cl-frame-"] { --cl-frame-accent:#d3a04c; --cl-frame-glow:rgba(211,160,76,.42); --cl-frame-deep:#6f4c1d; }
+.candlelight-sheet .cl-frame-purple { --cl-frame-accent:#a978d4; --cl-frame-glow:rgba(169,120,212,.42); --cl-frame-deep:#503166; }
+.candlelight-sheet .cl-frame-gold { --cl-frame-accent:#d3a04c; --cl-frame-glow:rgba(211,160,76,.42); --cl-frame-deep:#6f4c1d; }
+.candlelight-sheet .cl-frame-red { --cl-frame-accent:#c8585d; --cl-frame-glow:rgba(200,88,93,.42); --cl-frame-deep:#6d262a; }
+.candlelight-sheet .cl-frame-blue { --cl-frame-accent:#5d8fd5; --cl-frame-glow:rgba(93,143,213,.42); --cl-frame-deep:#294b78; }
+.candlelight-sheet .cl-frame-green { --cl-frame-accent:#77a95e; --cl-frame-glow:rgba(119,169,94,.42); --cl-frame-deep:#39592b; }
+.candlelight-sheet .cl-frame-teal { --cl-frame-accent:#4daaaa; --cl-frame-glow:rgba(77,170,170,.42); --cl-frame-deep:#245f63; }
+
+.candlelight-sheet .cl-core-portrait.cl-frame-purple > .cl-character-portrait,
+.candlelight-sheet .cl-core-portrait.cl-frame-gold > .cl-character-portrait,
+.candlelight-sheet .cl-core-portrait.cl-frame-red > .cl-character-portrait,
+.candlelight-sheet .cl-core-portrait.cl-frame-blue > .cl-character-portrait,
+.candlelight-sheet .cl-core-portrait.cl-frame-green > .cl-character-portrait,
+.candlelight-sheet .cl-core-portrait.cl-frame-teal > .cl-character-portrait {
+  border:2px solid var(--cl-frame-accent);
+  outline:1px solid var(--cl-frame-deep);
+  outline-offset:3px;
+  box-shadow:0 0 0 5px rgba(0,0,0,.45),0 8px 22px rgba(0,0,0,.5),0 0 18px var(--cl-frame-glow);
+}
+
+.candlelight-sheet .cl-portrait-spirit-icon,
+.candlelight-sheet .cl-spirit-feature-mask {
+  display:block;
+  background:var(--cl-frame-accent);
+  -webkit-mask-image:var(--cl-spirit-mask);
+  mask-image:var(--cl-spirit-mask);
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:center; mask-position:center;
+  -webkit-mask-size:contain; mask-size:contain;
+  filter:drop-shadow(0 0 6px var(--cl-frame-glow));
+}
+.candlelight-sheet .cl-portrait-spirit-icon { width:68px; height:68px; }
+.candlelight-sheet .cl-portrait-spirit > img { display:none; }
+.candlelight-sheet .cl-portrait-spirit-name {
+  max-width:112px; margin-top:-7px; padding:2px 9px 3px;
+  border:1px solid var(--cl-frame-accent); border-radius:3px;
+  background:rgba(5,7,8,.96); color:var(--cl-frame-accent);
+  font-family:Georgia,"Times New Roman",serif; font-size:10px; line-height:1.1;
+  text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  box-shadow:0 0 8px var(--cl-frame-glow);
+}
+
+.candlelight-sheet .cl-spirit-customizer {
+  display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:10px; margin-top:10px;
+}
+.candlelight-sheet [data-cl-spirit-tab-customizer] { margin:0 0 14px; }
+.candlelight-sheet .cl-spirit-customizer label { display:flex; flex-direction:column; gap:4px; }
+.candlelight-sheet .cl-spirit-customizer label > span {
+  color:#aa9f8a; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+}
+.candlelight-sheet .cl-spirit-customizer select { width:100%; min-height:30px; }
+.candlelight-sheet .cl-feature-card .cl-spirit-feature-mask { flex:0 0 96px; width:96px; height:96px; }
+@media (max-width:700px) { .candlelight-sheet .cl-spirit-customizer { grid-template-columns:1fr; } }

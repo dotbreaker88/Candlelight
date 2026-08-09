@@ -38,6 +38,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         wizardSlots: resourceField(1)
       }),
       universalDR: intField(0, 0),
+      spiritKey: new StringField({
+        required: false, nullable: false, initial: "",
+        choices: ["", "ant", "axolotl", "badger", "bat", "bear", "dragon", "fox", "hawk", "lion", "mantis", "mongoose", "monkey", "ox", "rabbit", "rat", "shark", "snake", "sphinx", "spider", "stag", "turtle", "vulture", "wolf", "phoenix", "barguest", "golem", "exile", "kraken", "thunderbird", "unicorn"]
+      }),
+      portraitFrameColor: new StringField({
+        required: true, nullable: false, initial: "gold",
+        choices: ["purple", "gold", "red", "blue", "green", "teal"]
+      }),
       state: new SchemaField({
         dead: new BooleanField({required: true, nullable: false, initial: false}),
         deathCause: new StringField({required: false, nullable: true, initial: ""})
