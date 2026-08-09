@@ -39,7 +39,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       }),
       universalDR: intField(0, 0),
       spiritKey: new StringField({
-        required: false, nullable: false, initial: "",
+        required: false, nullable: false, blank: true, initial: "",
         choices: ["", "ant", "axolotl", "badger", "bat", "bear", "dragon", "fox", "hawk", "lion", "mantis", "mongoose", "monkey", "ox", "rabbit", "rat", "shark", "snake", "sphinx", "spider", "stag", "turtle", "vulture", "wolf", "phoenix", "barguest", "golem", "exile", "kraken", "thunderbird", "unicorn"]
       }),
       portraitFrameColor: new StringField({
