@@ -2,50 +2,15 @@
   "id": "candlelight",
   "title": "Candlelight",
   "description": "Candlelight tabletop roleplaying game system for Foundry Virtual Tabletop.",
-  "version": "0.6.0",
-  "compatibility": {
-    "minimum": "14",
-    "verified": "14"
-  },
-  "authors": [
-    {
-      "name": "Candlelight"
-    }
-  ],
-  "esmodules": [
-    "scripts/candlelight.mjs"
-  ],
-  "styles": [
-    "styles/candlelight.css",
-    "styles/spirit-portrait.css",
-    "styles/portrait-ornate.css"
-  ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    }
-  ],
+  "version": "0.6.1",
+  "compatibility": {"minimum":"14","verified":"14"},
+  "authors": [{"name":"Candlelight"}],
+  "esmodules": ["scripts/candlelight.mjs"],
+  "styles": ["styles/candlelight.css","styles/spirit-portrait.css","styles/portrait-ornate.css"],
+  "languages": [{"lang":"en","name":"English","path":"lang/en.json"}],
   "documentTypes": {
-    "Actor": {
-      "character": {},
-      "loot": {}
-    },
-    "Item": {
-      "weapon": {},
-      "armor": {},
-      "accessory": {},
-      "equipment": {},
-      "ability": {},
-      "heritage": {},
-      "theme": {},
-      "class": {},
-      "spirit": {},
-      "element": {},
-      "massiveWound": {},
-      "talent": {}
-    }
+    "Actor": {"character":{},"loot":{}},
+    "Item": {"weapon":{},"armor":{},"accessory":{},"equipment":{},"ability":{},"heritage":{},"theme":{},"class":{},"spirit":{},"element":{},"massiveWound":{},"talent":{}}
   },
   "url": "https://github.com/dotbreaker88/Candlelight",
   "manifest": "https://raw.githubusercontent.com/dotbreaker88/Candlelight/main/system.json",
