@@ -18,19 +18,31 @@ function currentSpiritKey(actor) {
   return getSpiritKey(legacy);
 }
 
-function bindSelect(select, value, updatePath, actor) {
+function syncControls(root, actor) {
+  const key = currentSpiritKey(actor);
+  const color = CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor] ? actor.system.portraitFrameColor : "gold";
+  for (const select of root.querySelectorAll("[data-cl-spirit-select]")) select.value = key;
+  for (const select of root.querySelectorAll("[data-cl-frame-select]")) select.value = color;
+}
+
+function bindSelect(select, value, updatePath, actor, root) {
   select.value = value ?? "";
   if (select.dataset.clBound === "true") return;
   select.dataset.clBound = "true";
 
-  // These controls live inside Foundry's Actor form, but they perform their own
-  // targeted Actor.update. Capture the change before the sheet's submitOnChange
-  // listener sees it so changing Spirit/frame never submits unrelated form fields.
   select.addEventListener("change", async event => {
     event.preventDefault();
     event.stopImmediatePropagation();
     const next = event.currentTarget.value;
-    await actor.update({[updatePath]: next});
+
+    // Keep these customization changes surgical. A normal Actor update rerenders
+    // the legacy AppV1 sheet, which destroys these injected controls before the
+    // visual refresh can complete. Persist without rendering, then update the
+    // current DOM directly.
+    await actor.update({[updatePath]: next}, {render: false});
+    syncControls(root, actor);
+    updatePortrait(root, actor);
+    updateSpiritTab(root, actor);
   }, {capture: true});
 }
 
@@ -57,11 +69,22 @@ function ensureControls(root, actor) {
   }
 
   for (const select of root.querySelectorAll("[data-cl-spirit-select]")) {
-    bindSelect(select, key, "system.spiritKey", actor);
+    bindSelect(select, key, "system.spiritKey", actor, root);
   }
   for (const select of root.querySelectorAll("[data-cl-frame-select]")) {
-    bindSelect(select, color, "system.portraitFrameColor", actor);
+    bindSelect(select, color, "system.portraitFrameColor", actor, root);
   }
+}
+
+function neutralizeDuplicateLevelField(root) {
+  const headerLevel = root.querySelector('.cl-header .cl-summary input[name="system.level"]');
+  if (!headerLevel) return;
+  headerLevel.removeAttribute("name");
+  headerLevel.readOnly = true;
+  headerLevel.tabIndex = -1;
+  headerLevel.title = "Level is edited from the Core panel below.";
+  headerLevel.setAttribute("aria-label", "Current level");
+  headerLevel.classList.add("cl-level-mirror");
 }
 
 function updatePortrait(root, actor) {
@@ -118,6 +141,7 @@ Hooks.on("renderActorSheet", (app, html) => {
   if (!root?.querySelector?.(".candlelight-sheet")) return;
   const form = root.matches?.(".candlelight-sheet") ? root : root.querySelector(".candlelight-sheet");
   if (!form) return;
+  neutralizeDuplicateLevelField(form);
   ensureControls(form, actor);
   updatePortrait(form, actor);
   updateSpiritTab(form, actor);
