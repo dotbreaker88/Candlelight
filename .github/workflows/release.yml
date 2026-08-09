@@ -27,9 +27,13 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Validate Foundry manifest
+      - name: Validate Foundry system source
         shell: bash
         run: |
+          test -f scripts/candlelight.mjs
+          test -f styles/candlelight.css
+          test -f templates/character-sheet.hbs
+          test -f assets/icons/spirits/wolf.webp
           python - <<'PY'
           import json
           from pathlib import Path
@@ -52,8 +56,7 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: Candlelight ${{ steps.version.outputs.version }}
-          body: |
-            Automated Foundry VTT system release for Candlelight ${{ steps.version.outputs.version }}.
+          body: Automated Foundry VTT system release for Candlelight ${{ steps.version.outputs.version }}.
           make_latest: true
           generate_release_notes: true
           files: |
