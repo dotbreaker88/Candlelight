@@ -1,6 +1,14 @@
 import { CANDLELIGHT_FRAME_COLORS, CANDLELIGHT_SPIRITS, getSpiritIcon, getSpiritKey, getSpiritLabel } from "./spirit-icons.mjs";
 
 const FRAME_CLASSES = Object.keys(CANDLELIGHT_FRAME_COLORS).map(key => `cl-frame-${key}`);
+const FRAME_HEX = Object.freeze({
+  purple: "#a978d4",
+  gold: "#d3a04c",
+  red: "#c8585d",
+  blue: "#5d8fd5",
+  green: "#77a95e",
+  teal: "#4daaaa"
+});
 
 function optionMarkup(options, selected, blankLabel = null) {
   const rows = [];
@@ -18,9 +26,13 @@ function currentSpiritKey(actor) {
   return getSpiritKey(legacy);
 }
 
+function currentFrameColor(actor) {
+  return CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor] ? actor.system.portraitFrameColor : "gold";
+}
+
 function syncControls(root, actor) {
   const key = currentSpiritKey(actor);
-  const color = CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor] ? actor.system.portraitFrameColor : "gold";
+  const color = currentFrameColor(actor);
   for (const select of root.querySelectorAll("[data-cl-spirit-select]")) select.value = key;
   for (const select of root.querySelectorAll("[data-cl-frame-select]")) select.value = color;
 }
@@ -43,7 +55,7 @@ function bindSelect(select, value, updatePath, actor, root) {
 
 function ensureControls(root, actor) {
   const key = currentSpiritKey(actor);
-  const color = CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor] ? actor.system.portraitFrameColor : "gold";
+  const color = currentFrameColor(actor);
   const controls = `
     <div class="cl-portrait-customizer cl-spirit-customizer" data-cl-spirit-customizer>
       <label><span><i class="fa-solid fa-paw"></i> Spirit</span><select class="cl-custom-select" data-cl-spirit-select aria-label="Spirit selection">${optionMarkup(CANDLELIGHT_SPIRITS, key, "Choose Spirit")}</select></label>
@@ -78,21 +90,72 @@ function neutralizeDuplicateLevelField(root) {
   headerLevel.classList.add("cl-level-mirror");
 }
 
+function ensurePortraitOrnaments(portrait) {
+  let ornaments = portrait.querySelector(":scope > .cl-portrait-frame-ornaments");
+  if (ornaments) return ornaments;
+  ornaments = document.createElement("div");
+  ornaments.className = "cl-portrait-frame-ornaments";
+  ornaments.setAttribute("aria-hidden", "true");
+  ornaments.innerHTML = `
+    <span class="cl-frame-crown"><i></i></span>
+    <span class="cl-frame-rail cl-frame-rail-left"><i></i><b></b></span>
+    <span class="cl-frame-rail cl-frame-rail-right"><i></i><b></b></span>
+    <span class="cl-frame-corner cl-frame-corner-tl"></span>
+    <span class="cl-frame-corner cl-frame-corner-tr"></span>
+    <span class="cl-frame-corner cl-frame-corner-bl"></span>
+    <span class="cl-frame-corner cl-frame-corner-br"></span>
+    <span class="cl-frame-pedestal"><i></i><b></b></span>`;
+  portrait.prepend(ornaments);
+  return ornaments;
+}
+
+function tintCanvas(canvas, src, tint) {
+  if (!canvas || !src) return;
+  const size = Number(canvas.dataset.size || 96);
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  ctx.clearRect(0, 0, size, size);
+
+  const image = new Image();
+  image.decoding = "async";
+  image.onload = () => {
+    ctx.clearRect(0, 0, size, size);
+    const scale = Math.min(size / image.naturalWidth, size / image.naturalHeight);
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+    const x = (size - width) / 2;
+    const y = (size - height) / 2;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.drawImage(image, x, y, width, height);
+    ctx.globalCompositeOperation = "source-in";
+    ctx.fillStyle = tint;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalCompositeOperation = "source-over";
+  };
+  image.onerror = () => console.warn(`Candlelight | Could not load Spirit icon ${src}`);
+  image.src = src;
+}
+
 function updatePortrait(root, actor) {
   const portrait = root.querySelector(".cl-core-portrait");
   if (!portrait) return;
 
-  const color = CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor] ? actor.system.portraitFrameColor : "gold";
+  const color = currentFrameColor(actor);
   portrait.classList.remove(...FRAME_CLASSES);
   portrait.classList.add(`cl-frame-${color}`);
+  ensurePortraitOrnaments(portrait);
 
   const key = currentSpiritKey(actor);
   let medallion = portrait.querySelector(".cl-portrait-spirit");
   if (!key) {
     medallion?.remove();
+    portrait.classList.remove("cl-has-spirit");
     return;
   }
 
+  portrait.classList.add("cl-has-spirit");
   const icon = getSpiritIcon(key);
   const label = getSpiritLabel(key);
   if (!medallion) {
@@ -103,14 +166,12 @@ function updatePortrait(root, actor) {
   medallion.title = `${label} Spirit`;
   medallion.innerHTML = `
     <span class="cl-spirit-medallion" aria-hidden="true">
-      <span class="cl-spirit-finial cl-spirit-finial-left"></span>
-      <span class="cl-spirit-finial cl-spirit-finial-right"></span>
       <span class="cl-spirit-medallion-inner">
-        <img class="cl-spirit-icon-fallback" src="${icon}" alt="" />
-        <span class="cl-portrait-spirit-icon" role="img" aria-label="${label} Spirit icon" style="--cl-spirit-mask:url(&quot;${icon}&quot;)"></span>
+        <canvas class="cl-spirit-canvas" data-size="104" role="img" aria-label="${label} Spirit icon"></canvas>
       </span>
     </span>
     <span class="cl-portrait-spirit-name">${label}</span>`;
+  tintCanvas(medallion.querySelector(".cl-spirit-canvas"), icon, FRAME_HEX[color]);
 }
 
 function updateSpiritTab(root, actor) {
@@ -120,16 +181,19 @@ function updateSpiritTab(root, actor) {
   if (!panel) return;
   const feature = panel.querySelector(".cl-feature-card");
   if (!feature) return;
-  const color = CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor] ? actor.system.portraitFrameColor : "gold";
+
+  const color = currentFrameColor(actor);
   feature.classList.remove(...FRAME_CLASSES);
   feature.classList.add(`cl-frame-${color}`);
-  const oldIcon = feature.querySelector("img, .cl-spirit-feature-mask");
-  const mask = document.createElement("span");
-  mask.className = "cl-spirit-feature-mask";
-  mask.style.setProperty("--cl-spirit-mask", `url("${getSpiritIcon(key)}")`);
-  mask.setAttribute("role", "img");
-  mask.setAttribute("aria-label", `${getSpiritLabel(key)} Spirit icon`);
-  oldIcon?.replaceWith(mask);
+  const oldIcon = feature.querySelector("img, .cl-spirit-feature-mask, .cl-spirit-feature-canvas");
+  const canvas = document.createElement("canvas");
+  canvas.className = "cl-spirit-feature-canvas";
+  canvas.dataset.size = "128";
+  canvas.setAttribute("role", "img");
+  canvas.setAttribute("aria-label", `${getSpiritLabel(key)} Spirit icon`);
+  oldIcon?.replaceWith(canvas);
+  if (!oldIcon) feature.prepend(canvas);
+  tintCanvas(canvas, getSpiritIcon(key), FRAME_HEX[color]);
 }
 
 Hooks.on("renderActorSheet", (app, html) => {
