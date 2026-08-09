@@ -1,120 +1,310 @@
-/* v0.5.9 — layered blackened-metal portrait frame and compact recessed Spirit crest */
+/* v0.6.0 — gothic reliquary portrait frame with integrated Spirit crest */
 
 .candlelight-sheet .cl-core-hero {
-  grid-template-columns: 254px minmax(0,1fr) !important;
-  gap: 30px !important;
+  grid-template-columns: 282px minmax(0,1fr) !important;
+  gap: 32px !important;
   align-items: start !important;
 }
 
 .candlelight-sheet .cl-core-portrait {
   position: relative !important;
-  width: 238px !important;
-  min-height: 374px !important;
+  width: 264px !important;
+  min-height: 420px !important;
   margin: 0 auto !important;
-  padding: 49px 28px 111px !important;
+  padding: 66px 34px 126px !important;
   box-sizing: border-box !important;
   overflow: visible !important;
   isolation: isolate;
   background: none !important;
 }
 
-/* Broad body, but kept almost entirely blackened iron. */
+/* Deep blackened reliquary body. */
 .candlelight-sheet .cl-core-portrait::before {
   content:"";
   position:absolute;
   z-index:0;
-  inset:27px 8px 48px;
-  clip-path:polygon(20% 0,38% 0,44% 4%,50% 0,56% 4%,62% 0,80% 0,90% 5%,96% 14%,99% 25%,99% 70%,96% 80%,89% 87%,79% 91%,72% 100%,28% 100%,21% 91%,11% 87%,4% 80%,1% 70%,1% 25%,4% 14%,10% 5%);
+  inset:38px 8px 54px;
+  clip-path:polygon(
+    50% 0,58% 7%,73% 9%,84% 15%,92% 25%,96% 37%,96% 72%,91% 82%,82% 89%,72% 94%,66% 100%,34% 100%,28% 94%,18% 89%,9% 82%,4% 72%,4% 37%,8% 25%,16% 15%,27% 9%,42% 7%
+  );
   background:
-    linear-gradient(90deg,rgba(255,255,255,.065),transparent 8% 92%,rgba(255,255,255,.05)),
-    radial-gradient(ellipse at 50% 0,rgba(255,255,255,.08),transparent 28%),
-    linear-gradient(145deg,#343737 0,#151818 12%,#080a0a 35%,#020303 55%,#111414 78%,#2d3030 100%);
-  box-shadow:0 16px 30px rgba(0,0,0,.72),inset 0 0 0 1px rgba(255,255,255,.08),inset 0 0 26px rgba(0,0,0,.88),0 0 0 1px #010202;
+    radial-gradient(ellipse at 50% 3%,rgba(255,255,255,.10),transparent 22%),
+    linear-gradient(90deg,rgba(255,255,255,.05),transparent 10% 90%,rgba(255,255,255,.045)),
+    linear-gradient(150deg,#353838 0,#181b1b 12%,#080a0a 34%,#020303 57%,#111414 80%,#303333 100%);
+  box-shadow:
+    0 17px 34px rgba(0,0,0,.76),
+    0 0 0 1px #010202,
+    inset 0 0 0 1px rgba(255,255,255,.07),
+    inset 0 0 34px rgba(0,0,0,.92);
 }
 
-/* Inlaid trim follows the body rather than becoming the body. */
+/* Narrow engraved perimeter. */
 .candlelight-sheet .cl-core-portrait::after {
   content:"";
   position:absolute;
   z-index:1;
-  left:17px; right:17px; top:37px; bottom:61px;
-  clip-path:polygon(21% 0,38% 0,44% 4%,50% 1%,56% 4%,62% 0,79% 0,88% 6%,94% 16%,97% 26%,97% 68%,93% 77%,86% 83%,76% 87%,68% 95%,32% 95%,24% 87%,14% 83%,7% 77%,3% 68%,3% 26%,6% 16%,12% 6%);
+  inset:48px 18px 68px;
+  clip-path:polygon(50% 0,59% 8%,73% 10%,84% 17%,91% 28%,94% 39%,94% 68%,89% 78%,81% 84%,71% 89%,64% 96%,36% 96%,29% 89%,19% 84%,11% 78%,6% 68%,6% 39%,9% 28%,16% 17%,27% 10%,41% 8%);
   background:transparent;
-  box-shadow:inset 0 0 0 1px var(--cl-frame-deep),inset 0 0 0 3px #060808,inset 0 0 0 4px var(--cl-frame-accent),inset 0 0 0 6px #111414,inset 0 0 0 7px color-mix(in srgb,var(--cl-frame-highlight) 45%,#242727 55%);
-  filter:drop-shadow(0 0 5px color-mix(in srgb,var(--cl-frame-glow) 38%,transparent));
+  box-shadow:
+    inset 0 0 0 1px var(--cl-frame-deep),
+    inset 0 0 0 3px #060808,
+    inset 0 0 0 4px color-mix(in srgb,var(--cl-frame-accent) 86%,#9a927e 14%),
+    inset 0 0 0 6px #121515,
+    inset 0 0 0 7px color-mix(in srgb,var(--cl-frame-highlight) 42%,#252929 58%);
+  filter:drop-shadow(0 0 6px color-mix(in srgb,var(--cl-frame-glow) 34%,transparent));
 }
 
 .candlelight-sheet .cl-core-portrait > .cl-character-portrait {
   position:relative !important;
   z-index:4 !important;
-  width:182px !important;
-  height:232px !important;
-  margin:4px 0 0 !important;
+  width:196px !important;
+  height:248px !important;
+  margin:3px 0 0 !important;
   object-fit:cover !important;
-  border-radius:30px 30px 12px 12px !important;
-  border:1px solid #050707 !important;
-  outline:1px solid color-mix(in srgb,var(--cl-frame-accent) 68%,#d4c9ae 32%) !important;
+  border:1px solid #030404 !important;
+  border-radius:44px 44px 12px 12px !important;
+  outline:1px solid color-mix(in srgb,var(--cl-frame-accent) 62%,#cfc5ad 38%) !important;
   outline-offset:3px !important;
   background:#020303 !important;
-  box-shadow:0 0 0 6px #080a0a,0 0 0 7px var(--cl-frame-deep),0 11px 22px rgba(0,0,0,.74),inset 0 0 22px rgba(0,0,0,.4) !important;
+  box-shadow:
+    0 0 0 6px #080a0a,
+    0 0 0 7px var(--cl-frame-deep),
+    0 12px 24px rgba(0,0,0,.76),
+    inset 0 0 25px rgba(0,0,0,.42) !important;
 }
 
-.candlelight-sheet .cl-portrait-frame-ornaments {position:absolute;inset:0;z-index:6;pointer-events:none;}
-
-/* Multi-piece crown: central gem, swept wings and secondary crest line. */
-.candlelight-sheet .cl-frame-crown {position:absolute;left:50%;top:0;width:184px;height:60px;transform:translateX(-50%);}
-.candlelight-sheet .cl-frame-crown::before,.candlelight-sheet .cl-frame-crown::after {
-  content:"";position:absolute;top:28px;width:80px;height:23px;
-  border-top:4px double var(--cl-frame-accent);border-radius:80% 18% 0 0;
-  box-shadow:0 -3px 0 #171919,0 -5px 0 #050707;
+.candlelight-sheet .cl-portrait-frame-ornaments {
+  position:absolute;
+  inset:0;
+  z-index:6;
+  pointer-events:none;
 }
-.candlelight-sheet .cl-frame-crown::before {left:6px;transform:rotate(-10deg) skewX(-18deg);}
-.candlelight-sheet .cl-frame-crown::after {right:6px;transform:scaleX(-1) rotate(-10deg) skewX(-18deg);}
+
+/* Pointed inner arch gives the portrait a gothic window silhouette. */
+.candlelight-sheet .cl-frame-arch {
+  position:absolute;
+  left:50%;
+  top:43px;
+  width:222px;
+  height:292px;
+  transform:translateX(-50%);
+  clip-path:polygon(50% 0,86% 20%,98% 38%,98% 84%,91% 93%,80% 100%,20% 100%,9% 93%,2% 84%,2% 38%,14% 20%);
+  background:linear-gradient(145deg,#282b2b,#070909 24%,#020303 54%,#141717 82%,#2a2d2d);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 8px 20px rgba(0,0,0,.55);
+  z-index:1;
+}
+.candlelight-sheet .cl-frame-arch::before {
+  content:"";
+  position:absolute;
+  inset:7px;
+  clip-path:inherit;
+  background:#040606;
+  box-shadow:
+    inset 0 0 0 1px var(--cl-frame-deep),
+    inset 0 0 0 3px #111414,
+    inset 0 0 0 4px var(--cl-frame-accent),
+    inset 0 0 0 7px #050707;
+}
+.candlelight-sheet .cl-frame-arch > i,
+.candlelight-sheet .cl-frame-arch > b {
+  position:absolute;
+  z-index:2;
+  top:44px;
+  width:48px;
+  height:96px;
+  border-top:1px solid color-mix(in srgb,var(--cl-frame-highlight) 60%,transparent);
+  border-radius:70% 10% 0 0;
+  opacity:.7;
+}
+.candlelight-sheet .cl-frame-arch > i {left:20px;transform:rotate(-21deg);border-left:1px solid var(--cl-frame-deep);}
+.candlelight-sheet .cl-frame-arch > b {right:20px;transform:scaleX(-1) rotate(-21deg);border-left:1px solid var(--cl-frame-deep);}
+
+/* Crown: central jewel, three-point finial, and swept metal leaves. */
+.candlelight-sheet .cl-frame-crown {
+  position:absolute;
+  left:50%;
+  top:-3px;
+  width:214px;
+  height:78px;
+  transform:translateX(-50%);
+  z-index:8;
+}
+.candlelight-sheet .cl-frame-crown::before,
+.candlelight-sheet .cl-frame-crown::after {
+  content:"";
+  position:absolute;
+  top:36px;
+  width:91px;
+  height:29px;
+  clip-path:polygon(0 58%,24% 20%,55% 0,100% 40%,74% 47%,100% 66%,53% 52%,18% 82%);
+  background:linear-gradient(180deg,#272a2a,#090b0b 62%,#020303);
+  box-shadow:inset 0 1px rgba(255,255,255,.08);
+}
+.candlelight-sheet .cl-frame-crown::before {left:2px;}
+.candlelight-sheet .cl-frame-crown::after {right:2px;transform:scaleX(-1);}
 .candlelight-sheet .cl-frame-crown > i {
-  position:absolute;left:50%;top:4px;width:28px;height:36px;transform:translateX(-50%) rotate(45deg);
-  border:3px solid #070909;outline:1px solid var(--cl-frame-accent);
-  background:linear-gradient(135deg,var(--cl-frame-highlight),var(--cl-frame-accent) 38%,var(--cl-frame-deep) 68%,#080a0a 69%);
-  box-shadow:0 0 12px var(--cl-frame-glow),inset 0 0 0 2px rgba(0,0,0,.48);
+  position:absolute;
+  left:50%;
+  top:1px;
+  width:31px;
+  height:42px;
+  transform:translateX(-50%) rotate(45deg);
+  border:4px solid #060808;
+  outline:1px solid var(--cl-frame-accent);
+  background:linear-gradient(135deg,var(--cl-frame-highlight),var(--cl-frame-accent) 38%,var(--cl-frame-deep) 68%,#070909 69%);
+  box-shadow:0 0 12px var(--cl-frame-glow),inset 0 0 0 2px rgba(0,0,0,.52);
 }
-.candlelight-sheet .cl-frame-crown > i::after {content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.34);}
-.candlelight-sheet .cl-frame-crown > b {position:absolute;left:50%;top:45px;width:86px;height:10px;transform:translateX(-50%);border-top:1px solid var(--cl-frame-highlight);border-radius:50%;opacity:.7;}
+.candlelight-sheet .cl-frame-crown > i::after {content:"";position:absolute;inset:7px;border:1px solid rgba(255,255,255,.35);}
+.candlelight-sheet .cl-frame-crown > b {
+  position:absolute;left:50%;top:52px;width:112px;height:18px;transform:translateX(-50%);
+  border-top:3px double var(--cl-frame-accent);border-radius:50%;
+  box-shadow:0 -4px 0 #111414;
+}
+.candlelight-sheet .cl-frame-crown > em::before,
+.candlelight-sheet .cl-frame-crown > em::after {
+  content:"◆";position:absolute;top:43px;color:var(--cl-frame-highlight);font-size:7px;text-shadow:0 0 5px var(--cl-frame-glow);
+}
+.candlelight-sheet .cl-frame-crown > em::before {left:52px;}.candlelight-sheet .cl-frame-crown > em::after {right:52px;}
 
-/* Stepped shoulders make the top corners feel built rather than drawn. */
-.candlelight-sheet .cl-frame-shoulder {position:absolute;top:43px;width:58px;height:38px;background:linear-gradient(155deg,#2c2f2f,#0c0e0e 52%,#030404);clip-path:polygon(0 30%,24% 0,100% 0,84% 26%,72% 34%,100% 62%,90% 100%,25% 100%,0 72%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);}
-.candlelight-sheet .cl-frame-shoulder-left {left:5px;}
-.candlelight-sheet .cl-frame-shoulder-right {right:5px;transform:scaleX(-1);}
-.candlelight-sheet .cl-frame-shoulder > i {position:absolute;left:13px;right:6px;top:11px;height:2px;background:linear-gradient(90deg,var(--cl-frame-accent),transparent);box-shadow:0 0 4px var(--cl-frame-glow);}
+/* Sculpted shoulder wings bridge crown to vertical rails. */
+.candlelight-sheet .cl-frame-wing {
+  position:absolute;
+  top:49px;
+  width:78px;
+  height:62px;
+  clip-path:polygon(0 50%,16% 17%,48% 0,100% 13%,84% 31%,100% 45%,72% 52%,96% 71%,57% 65%,24% 100%,7% 82%);
+  background:linear-gradient(150deg,#333636,#121515 38%,#050707 72%,#202323);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+  z-index:4;
+}
+.candlelight-sheet .cl-frame-wing-left {left:1px;}
+.candlelight-sheet .cl-frame-wing-right {right:1px;transform:scaleX(-1);}
+.candlelight-sheet .cl-frame-wing > i {
+  position:absolute;left:18px;top:19px;width:45px;height:1px;background:linear-gradient(90deg,var(--cl-frame-accent),transparent);box-shadow:0 0 4px var(--cl-frame-glow);
+}
+.candlelight-sheet .cl-frame-wing > b {
+  position:absolute;left:28px;top:30px;width:30px;height:1px;background:linear-gradient(90deg,var(--cl-frame-deep),transparent);
+}
 
-/* Heavier carved side rails with inset accent grooves and three studs. */
-.candlelight-sheet .cl-frame-rail {position:absolute;top:76px;width:23px;height:184px;border-radius:11px 4px 4px 11px;background:linear-gradient(90deg,#030404,#2b2e2e 37%,#101212 68%,#030404);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset -5px 0 8px rgba(0,0,0,.5),0 0 0 1px #010202;}
-.candlelight-sheet .cl-frame-rail-left {left:4px;}
-.candlelight-sheet .cl-frame-rail-right {right:4px;transform:scaleX(-1);}
-.candlelight-sheet .cl-frame-rail > i {position:absolute;left:8px;top:12px;bottom:12px;width:3px;border-left:1px solid var(--cl-frame-highlight);border-right:1px solid var(--cl-frame-deep);background:var(--cl-frame-accent);opacity:.88;box-shadow:0 0 4px var(--cl-frame-glow);}
-.candlelight-sheet .cl-frame-rail > b::before,.candlelight-sheet .cl-frame-rail > b::after {content:"◆";position:absolute;left:5px;color:var(--cl-frame-accent);font-size:9px;text-shadow:0 0 5px var(--cl-frame-glow);}
-.candlelight-sheet .cl-frame-rail > b::before {top:44px;}.candlelight-sheet .cl-frame-rail > b::after {bottom:44px;}
-.candlelight-sheet .cl-frame-rail::after {content:"◆";position:absolute;left:5px;top:86px;color:var(--cl-frame-highlight);font-size:9px;text-shadow:0 0 5px var(--cl-frame-glow);}
+/* Column-like side rails, with cap, shaft, engraved channel and gems. */
+.candlelight-sheet .cl-frame-rail {
+  position:absolute;
+  top:104px;
+  width:31px;
+  height:194px;
+  border-radius:10px 4px 4px 10px;
+  background:
+    linear-gradient(90deg,#020303,#343737 27%,#151818 48%,#050707 78%,#010202);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset -7px 0 10px rgba(0,0,0,.55),0 0 0 1px #010202,0 7px 14px rgba(0,0,0,.45);
+  z-index:5;
+}
+.candlelight-sheet .cl-frame-rail-left {left:1px;}
+.candlelight-sheet .cl-frame-rail-right {right:1px;transform:scaleX(-1);}
+.candlelight-sheet .cl-frame-rail::before,
+.candlelight-sheet .cl-frame-rail::after {
+  content:"";position:absolute;left:-3px;width:37px;height:17px;
+  clip-path:polygon(10% 0,90% 0,100% 50%,88% 100%,12% 100%,0 50%);
+  background:linear-gradient(180deg,#333636,#090b0b);
+  box-shadow:inset 0 0 0 1px var(--cl-frame-deep);
+}
+.candlelight-sheet .cl-frame-rail::before {top:-7px;}.candlelight-sheet .cl-frame-rail::after {bottom:-7px;}
+.candlelight-sheet .cl-frame-rail > i {
+  position:absolute;left:11px;top:15px;bottom:15px;width:4px;
+  background:linear-gradient(180deg,var(--cl-frame-deep),var(--cl-frame-accent) 15%,var(--cl-frame-deep) 47%,var(--cl-frame-highlight) 52%,var(--cl-frame-deep) 58%,var(--cl-frame-accent) 86%,var(--cl-frame-deep));
+  box-shadow:0 0 4px var(--cl-frame-glow),inset 1px 0 rgba(255,255,255,.18);
+}
+.candlelight-sheet .cl-frame-rail > b::before,
+.candlelight-sheet .cl-frame-rail > b::after,
+.candlelight-sheet .cl-frame-rail > em::after {
+  content:"◆";position:absolute;left:7px;color:var(--cl-frame-accent);font-size:10px;text-shadow:0 0 5px var(--cl-frame-glow);
+}
+.candlelight-sheet .cl-frame-rail > b::before {top:40px;}.candlelight-sheet .cl-frame-rail > b::after {bottom:40px;}.candlelight-sheet .cl-frame-rail > em::after {top:91px;color:var(--cl-frame-highlight);}
 
-/* Bottom scrolls curl inward around the Spirit pedestal. */
-.candlelight-sheet .cl-frame-scroll {position:absolute;top:244px;width:62px;height:72px;border-bottom:7px solid #151818;border-radius:0 0 70% 20%;box-shadow:0 3px 0 var(--cl-frame-deep),0 5px 0 #050707;}
-.candlelight-sheet .cl-frame-scroll::before {content:"";position:absolute;bottom:7px;width:43px;height:43px;border:2px solid var(--cl-frame-accent);border-top-color:transparent;border-left-color:color-mix(in srgb,var(--cl-frame-accent) 45%,transparent);border-radius:50%;opacity:.75;box-shadow:0 0 5px var(--cl-frame-glow);}
-.candlelight-sheet .cl-frame-scroll-left {left:9px;transform:rotate(8deg);}.candlelight-sheet .cl-frame-scroll-left::before {left:8px;}
-.candlelight-sheet .cl-frame-scroll-right {right:9px;transform:scaleX(-1) rotate(8deg);}.candlelight-sheet .cl-frame-scroll-right::before {left:8px;}
+/* Fine tracery overlays fill the dead space without becoming bright slabs. */
+.candlelight-sheet .cl-frame-tracery {
+  position:absolute;top:107px;width:42px;height:174px;z-index:7;opacity:.75;
+}
+.candlelight-sheet .cl-frame-tracery-left {left:22px;}.candlelight-sheet .cl-frame-tracery-right {right:22px;transform:scaleX(-1);}
+.candlelight-sheet .cl-frame-tracery::before,
+.candlelight-sheet .cl-frame-tracery::after {
+  content:"";position:absolute;left:5px;width:29px;height:66px;border-left:1px solid var(--cl-frame-deep);border-bottom:1px solid color-mix(in srgb,var(--cl-frame-accent) 65%,transparent);border-radius:0 0 0 85%;
+}
+.candlelight-sheet .cl-frame-tracery::before {top:5px;transform:skewY(-12deg);}.candlelight-sheet .cl-frame-tracery::after {bottom:5px;transform:scaleY(-1) skewY(-12deg);}
+.candlelight-sheet .cl-frame-tracery > i {position:absolute;left:12px;top:74px;width:16px;height:16px;transform:rotate(45deg);border:1px solid var(--cl-frame-accent);box-shadow:inset 0 0 0 3px #060808,0 0 4px var(--cl-frame-glow);}
 
-/* Pedestal is wider than the medallion and visually part of the portrait chassis. */
-.candlelight-sheet .cl-frame-pedestal {position:absolute;left:50%;bottom:35px;width:206px;height:111px;transform:translateX(-50%);z-index:1;clip-path:polygon(0 29%,12% 22%,19% 8%,32% 2%,42% 0,58% 0,68% 2%,81% 8%,88% 22%,100% 29%,94% 48%,91% 72%,82% 84%,70% 91%,62% 100%,38% 100%,30% 91%,18% 84%,9% 72%,6% 48%);background:linear-gradient(180deg,#303333,#111414 22%,#050707 58%,#171a1a 100%);box-shadow:0 11px 20px rgba(0,0,0,.72),inset 0 0 0 1px rgba(255,255,255,.07);}
-.candlelight-sheet .cl-frame-pedestal::before {content:"";position:absolute;inset:7px 14px 9px;clip-path:inherit;box-shadow:inset 0 0 0 1px var(--cl-frame-deep),inset 0 0 0 3px #070909,inset 0 0 0 4px var(--cl-frame-accent),inset 0 0 0 6px #111414;}
-.candlelight-sheet .cl-frame-pedestal > i,.candlelight-sheet .cl-frame-pedestal > b {position:absolute;top:49px;width:48px;height:3px;background:linear-gradient(90deg,transparent,var(--cl-frame-accent));box-shadow:0 0 5px var(--cl-frame-glow);}
-.candlelight-sheet .cl-frame-pedestal > i {left:14px;}.candlelight-sheet .cl-frame-pedestal > b {right:14px;transform:scaleX(-1);}
+/* Large lower scrollwork curls inward and creates a cradle for the crest. */
+.candlelight-sheet .cl-frame-scroll {
+  position:absolute;top:277px;width:88px;height:85px;z-index:5;
+}
+.candlelight-sheet .cl-frame-scroll-left {left:0;}.candlelight-sheet .cl-frame-scroll-right {right:0;transform:scaleX(-1);}
+.candlelight-sheet .cl-frame-scroll::before {
+  content:"";position:absolute;left:5px;top:8px;width:72px;height:63px;
+  border-left:10px solid #171a1a;border-bottom:10px solid #171a1a;border-radius:0 0 0 85%;
+  box-shadow:-3px 3px 0 var(--cl-frame-deep),-5px 5px 0 #040606;
+  transform:rotate(-12deg);
+}
+.candlelight-sheet .cl-frame-scroll::after {
+  content:"";position:absolute;left:30px;top:31px;width:39px;height:39px;
+  border:2px solid var(--cl-frame-accent);border-top-color:transparent;border-radius:50%;opacity:.72;box-shadow:0 0 5px var(--cl-frame-glow);
+}
+.candlelight-sheet .cl-frame-scroll > i {
+  position:absolute;left:14px;top:53px;width:36px;height:2px;background:linear-gradient(90deg,var(--cl-frame-deep),var(--cl-frame-accent),transparent);transform:rotate(24deg);box-shadow:0 0 4px var(--cl-frame-glow);
+}
 
-/* Compact crest. The icon now gets alpha-trimmed in JS, so the visible silhouette centers correctly. */
-.candlelight-sheet .cl-core-portrait .cl-portrait-spirit {position:absolute !important;left:50% !important;bottom:17px !important;z-index:10 !important;width:140px !important;min-height:106px !important;transform:translateX(-50%) !important;display:flex !important;flex-direction:column !important;align-items:center !important;pointer-events:none;filter:drop-shadow(0 8px 9px rgba(0,0,0,.68)) !important;}
-.candlelight-sheet .cl-core-portrait .cl-spirit-medallion {position:relative !important;width:84px !important;height:84px !important;display:grid !important;place-items:center !important;border-radius:50% !important;clip-path:none !important;background:radial-gradient(circle at 45% 38%,#242828,#090b0b 54%,#020303 78%) !important;border:2px solid var(--cl-frame-accent) !important;outline:5px double #111414 !important;box-shadow:0 0 0 1px var(--cl-frame-deep),0 0 0 7px #030404,0 0 0 8px color-mix(in srgb,var(--cl-frame-accent) 55%,#343737 45%),0 0 13px color-mix(in srgb,var(--cl-frame-glow) 50%,transparent),inset 0 0 15px rgba(0,0,0,.92) !important;}
-.candlelight-sheet .cl-core-portrait .cl-spirit-medallion::before {content:"";position:absolute;inset:8px;border:1px solid color-mix(in srgb,var(--cl-frame-highlight) 68%,#555 32%);border-radius:50%;opacity:.65;}
-.candlelight-sheet .cl-core-portrait .cl-spirit-medallion::after {content:"";position:absolute;left:50%;bottom:-11px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);border:1px solid var(--cl-frame-accent);background:var(--cl-frame-deep);box-shadow:inset 0 0 0 2px #070909,0 0 5px var(--cl-frame-glow);}
-.candlelight-sheet .cl-core-portrait .cl-spirit-medallion-inner {position:relative !important;z-index:3 !important;width:68px !important;height:68px !important;display:grid !important;place-items:center !important;}
-.candlelight-sheet .cl-core-portrait .cl-spirit-canvas {display:block;width:68px !important;height:68px !important;filter:drop-shadow(0 0 4px var(--cl-frame-glow));}
-.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name {min-width:104px !important;max-width:132px !important;margin-top:12px !important;padding:4px 15px 5px !important;border:1px solid var(--cl-frame-accent) !important;border-radius:0 !important;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%) !important;background:linear-gradient(180deg,#181b1b,#050707) !important;color:var(--cl-frame-highlight) !important;font-family:Georgia,"Times New Roman",serif !important;font-size:10px !important;font-weight:700 !important;letter-spacing:.11em !important;text-align:center !important;text-transform:uppercase !important;box-shadow:inset 0 0 0 1px var(--cl-frame-deep),0 0 8px color-mix(in srgb,var(--cl-frame-glow) 55%,transparent) !important;}
+/* Crest pedestal has a pointed socket instead of a flat horizontal shelf. */
+.candlelight-sheet .cl-frame-pedestal {
+  position:absolute;left:50%;bottom:34px;width:226px;height:130px;transform:translateX(-50%);z-index:3;
+  clip-path:polygon(50% 0,62% 7%,76% 9%,88% 19%,100% 30%,93% 45%,91% 67%,82% 78%,70% 86%,62% 100%,38% 100%,30% 86%,18% 78%,9% 67%,7% 45%,0 30%,12% 19%,24% 9%,38% 7%);
+  background:linear-gradient(180deg,#303333 0,#111414 23%,#050707 58%,#171a1a 100%);
+  box-shadow:0 12px 22px rgba(0,0,0,.74),inset 0 0 0 1px rgba(255,255,255,.07);
+}
+.candlelight-sheet .cl-frame-pedestal::before {
+  content:"";position:absolute;inset:7px 12px 10px;clip-path:inherit;
+  box-shadow:inset 0 0 0 1px var(--cl-frame-deep),inset 0 0 0 3px #060808,inset 0 0 0 4px var(--cl-frame-accent),inset 0 0 0 7px #111414;
+}
+.candlelight-sheet .cl-frame-pedestal > i,
+.candlelight-sheet .cl-frame-pedestal > b {
+  position:absolute;top:59px;width:52px;height:2px;background:linear-gradient(90deg,transparent,var(--cl-frame-accent));box-shadow:0 0 5px var(--cl-frame-glow);
+}
+.candlelight-sheet .cl-frame-pedestal > i {left:13px;}.candlelight-sheet .cl-frame-pedestal > b {right:13px;transform:scaleX(-1);}
+.candlelight-sheet .cl-frame-pedestal > em::before,
+.candlelight-sheet .cl-frame-pedestal > em::after {
+  content:"◆";position:absolute;top:55px;color:var(--cl-frame-highlight);font-size:7px;text-shadow:0 0 4px var(--cl-frame-glow);
+}
+.candlelight-sheet .cl-frame-pedestal > em::before {left:64px;}.candlelight-sheet .cl-frame-pedestal > em::after {right:64px;}
+
+/* Compact integrated Spirit seal. */
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit {
+  position:absolute !important;left:50% !important;bottom:18px !important;z-index:11 !important;
+  width:138px !important;min-height:104px !important;transform:translateX(-50%) !important;
+  display:flex !important;flex-direction:column !important;align-items:center !important;pointer-events:none;
+  filter:drop-shadow(0 8px 9px rgba(0,0,0,.68)) !important;
+}
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion {
+  position:relative !important;width:78px !important;height:78px !important;display:grid !important;place-items:center !important;
+  border-radius:50% !important;clip-path:none !important;
+  background:radial-gradient(circle at 45% 38%,#222626,#080a0a 55%,#020303 80%) !important;
+  border:2px solid var(--cl-frame-accent) !important;
+  outline:5px double #111414 !important;
+  box-shadow:0 0 0 1px var(--cl-frame-deep),0 0 0 7px #030404,0 0 0 8px color-mix(in srgb,var(--cl-frame-accent) 50%,#343737 50%),0 0 12px color-mix(in srgb,var(--cl-frame-glow) 48%,transparent),inset 0 0 15px rgba(0,0,0,.92) !important;
+}
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion::before {content:"";position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--cl-frame-highlight) 62%,#555 38%);border-radius:50%;opacity:.62;}
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion::after {content:"";position:absolute;left:50%;bottom:-10px;width:11px;height:11px;transform:translateX(-50%) rotate(45deg);border:1px solid var(--cl-frame-accent);background:var(--cl-frame-deep);box-shadow:inset 0 0 0 2px #070909,0 0 5px var(--cl-frame-glow);}
+.candlelight-sheet .cl-core-portrait .cl-spirit-medallion-inner {position:relative !important;z-index:3 !important;width:62px !important;height:62px !important;display:grid !important;place-items:center !important;}
+.candlelight-sheet .cl-core-portrait .cl-spirit-canvas {display:block;width:62px !important;height:62px !important;filter:drop-shadow(0 0 4px var(--cl-frame-glow));}
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name {
+  min-width:108px !important;max-width:136px !important;margin-top:12px !important;padding:4px 16px 5px !important;
+  border:1px solid var(--cl-frame-accent) !important;border-radius:0 !important;
+  clip-path:polygon(9% 0,91% 0,100% 50%,91% 100%,9% 100%,0 50%) !important;
+  background:linear-gradient(180deg,#181b1b,#050707) !important;color:var(--cl-frame-highlight) !important;
+  font-family:Georgia,"Times New Roman",serif !important;font-size:10px !important;font-weight:700 !important;letter-spacing:.12em !important;text-align:center !important;text-transform:uppercase !important;
+  box-shadow:inset 0 0 0 1px var(--cl-frame-deep),0 0 8px color-mix(in srgb,var(--cl-frame-glow) 50%,transparent) !important;
+}
 
 .candlelight-sheet .cl-spirit-feature-canvas {flex:0 0 96px;width:96px;height:96px;object-fit:contain;filter:drop-shadow(0 0 5px var(--cl-frame-glow));}
 
-@media (max-width:760px){.candlelight-sheet .cl-core-hero{grid-template-columns:1fr !important}.candlelight-sheet .cl-core-portrait{margin-bottom:10px !important}}
+@media (max-width:760px) {
+  .candlelight-sheet .cl-core-hero {grid-template-columns:1fr !important;}
+  .candlelight-sheet .cl-core-portrait {margin-bottom:8px !important;}
+}
