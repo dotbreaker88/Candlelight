@@ -1,0 +1,16 @@
+/* v0.6.8 — Challenge rolls in the Defenses & Combat panel. */
+.candlelight-sheet .cl-challenge-panel{margin-top:12px;padding-top:10px;border-top:1px solid rgba(211,160,76,.18)}
+.candlelight-sheet .cl-challenge-heading{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;color:#d7a74f;font-family:Georgia,"Times New Roman",serif;text-transform:uppercase;letter-spacing:.08em}
+.candlelight-sheet .cl-challenge-heading span{font-size:13px;font-weight:700}
+.candlelight-sheet .cl-challenge-heading small{color:#827968;font-family:inherit;font-size:9px;letter-spacing:.1em}
+.candlelight-sheet .cl-challenge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.candlelight-sheet .cl-challenge-card{position:relative;display:grid!important;grid-template-columns:28px minmax(0,1fr) auto;grid-template-rows:auto auto;gap:1px 7px;align-items:center;min-height:56px;padding:7px 8px!important;border:1px solid rgba(96,154,166,.25)!important;border-radius:5px!important;background:linear-gradient(180deg,rgba(17,29,32,.82),rgba(5,9,10,.94))!important;text-align:left!important;box-shadow:inset 0 1px rgba(255,255,255,.025)!important}
+.candlelight-sheet .cl-challenge-card:hover{border-color:rgba(211,160,76,.55)!important;background:linear-gradient(180deg,rgba(40,34,22,.86),rgba(9,12,13,.96))!important}
+.candlelight-sheet .cl-challenge-card>i{grid-row:1/3;width:28px;text-align:center;color:#79b9c4;font-size:18px;text-shadow:0 0 8px rgba(90,170,185,.25)}
+.candlelight-sheet .cl-challenge-card .cl-challenge-label{align-self:end;color:#e6dac1;font-family:Georgia,"Times New Roman",serif;font-size:12px;font-weight:700;line-height:1.05}
+.candlelight-sheet .cl-challenge-card>strong{grid-column:3;grid-row:1/3;align-self:center;color:#d7aa52;font-size:19px;line-height:1}
+.candlelight-sheet .cl-challenge-card>small{grid-column:2;align-self:start;color:#817a6d;font-size:8px;letter-spacing:.08em;text-transform:uppercase}
+.candlelight-sheet .cl-challenge-card[data-challenge="dodge"]>i{color:#75b68d}
+.candlelight-sheet .cl-challenge-card[data-challenge="parry"]>i{color:#d08a68}
+.candlelight-sheet .cl-challenge-card[data-challenge="block"]>i{color:#76b9c5}
+.candlelight-sheet .cl-challenge-card[data-challenge="standTall"]>i{color:#b995d2}
