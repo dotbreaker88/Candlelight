@@ -31,7 +31,16 @@ jobs:
         shell: bash
         run: |
           mkdir -p assets/ui
-          cat assets/ui/source/portrait-frame.webp.b64.* | tr -d '\n\r ' | base64 --decode > assets/ui/portrait-frame.webp
+          cat assets/ui/source/portrait-frame.webp.b64.* | tr -cd 'A-Za-z0-9+/=' > /tmp/portrait-frame.b64
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('/tmp/portrait-frame.b64')
+          text = p.read_text()
+          expected = 66488
+          if len(text) != expected:
+              raise SystemExit(f'Portrait frame base64 length mismatch: expected {expected}, got {len(text)}')
+          PY
+          base64 --decode /tmp/portrait-frame.b64 > assets/ui/portrait-frame.webp
           python - <<'PY'
           from pathlib import Path
           p = Path('assets/ui/portrait-frame.webp')
