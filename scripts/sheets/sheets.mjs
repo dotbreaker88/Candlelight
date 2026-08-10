@@ -12,7 +12,7 @@ export class CandlelightCharacterSheet extends foundry.appv1.sheets.ActorSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes:["candlelight","sheet","actor","character"],
       template:"systems/candlelight/templates/character-sheet.hbs",
-      width:920, height:820, resizable:true, submitOnChange:true, closeOnSubmit:false
+      width:1180, height:860, resizable:true, submitOnChange:true, closeOnSubmit:false
     });
   }
 
@@ -152,46 +152,15 @@ export class CandlelightCharacterSheet extends foundry.appv1.sheets.ActorSheet {
     await item.update({"system.equipped":equip});
   }
 
-
   async _createCandlelightEffect(key) {
     const presets = {
-      embolden: {
-        name: "Embolden",
-        icon: "icons/svg/upgrade.svg",
-        polarity: "positive",
-        mode: "best",
-        description: "While active, applicable dice rolls are made twice and the better result is kept."
-      },
-      dishearten: {
-        name: "Dishearten",
-        icon: "icons/svg/downgrade.svg",
-        polarity: "negative",
-        mode: "worst",
-        description: "While active, applicable dice rolls are made twice and the worse result is kept."
-      }
+      embolden: {name:"Embolden",icon:"icons/svg/upgrade.svg",polarity:"positive",mode:"best",description:"While active, applicable dice rolls are made twice and the better result is kept."},
+      dishearten: {name:"Dishearten",icon:"icons/svg/downgrade.svg",polarity:"negative",mode:"worst",description:"While active, applicable dice rolls are made twice and the worse result is kept."}
     };
-    const preset = presets[key];
-    if (!preset) return;
-
+    const preset = presets[key]; if (!preset) return;
     const existing = [...this.actor.effects].find(e => String(e.name ?? "").toLowerCase() === preset.name.toLowerCase());
-    if (existing) {
-      if (existing.disabled) await existing.update({disabled:false});
-      return ui.notifications.info(`Candlelight | ${preset.name} is already present on ${this.actor.name}.`);
-    }
-
-    await this.actor.createEmbeddedDocuments("ActiveEffect", [{
-      name: preset.name,
-      icon: preset.icon,
-      disabled: false,
-      description: preset.description,
-      flags: {
-        candlelight: {
-          polarity: preset.polarity,
-          rollTwice: preset.mode,
-          systemEffect: key
-        }
-      }
-    }]);
+    if (existing) {if (existing.disabled) await existing.update({disabled:false});return ui.notifications.info(`Candlelight | ${preset.name} is already present on ${this.actor.name}.`);}
+    await this.actor.createEmbeddedDocuments("ActiveEffect", [{name:preset.name,icon:preset.icon,disabled:false,description:preset.description,flags:{candlelight:{polarity:preset.polarity,rollTwice:preset.mode,systemEffect:key}}}]);
   }
 
   async _createEffect(polarity="neutral") {
@@ -202,17 +171,13 @@ export class CandlelightCharacterSheet extends foundry.appv1.sheets.ActorSheet {
 }
 
 export class CandlelightLootSheet extends foundry.appv1.sheets.ActorSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {classes:["candlelight","sheet","actor","loot"], template:"systems/candlelight/templates/loot-sheet.hbs", width:420, height:360, resizable:true});
-  }
+  static get defaultOptions() {return foundry.utils.mergeObject(super.defaultOptions, {classes:["candlelight","sheet","actor","loot"], template:"systems/candlelight/templates/loot-sheet.hbs", width:420, height:360, resizable:true});}
   async getData(options={}) { const c=await super.getData(options); c.cl={items:[...this.actor.items]}; return c; }
   activateListeners(html) { super.activateListeners(html); html.find("[data-action='pickup']").on("click", e => CandlelightLoot.pickup(this.actor, e.currentTarget.dataset.itemId)); html.find("[data-action='pickup-all']").on("click", () => CandlelightLoot.pickup(this.actor)); }
 }
 
 export class CandlelightItemSheet extends foundry.appv1.sheets.ItemSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {classes:["candlelight","sheet","item"],template:"systems/candlelight/templates/item-sheet.hbs",width:520,height:600,resizable:true,submitOnChange:true,closeOnSubmit:false});
-  }
+  static get defaultOptions() {return foundry.utils.mergeObject(super.defaultOptions, {classes:["candlelight","sheet","item"],template:"systems/candlelight/templates/item-sheet.hbs",width:520,height:600,resizable:true,submitOnChange:true,closeOnSubmit:false});}
   async getData(options={}) { const c=await super.getData(options); c.system=this.item.system; return c; }
   async _updateObject(event,formData) { await this.item.update(formData); }
 }
