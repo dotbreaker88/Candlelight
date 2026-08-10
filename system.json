@@ -2,7 +2,7 @@
   "id": "candlelight",
   "title": "Candlelight",
   "description": "Candlelight tabletop roleplaying game system for Foundry Virtual Tabletop.",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "compatibility": {"minimum":"14","verified":"14"},
   "authors": [{"name":"Candlelight"}],
   "esmodules": ["scripts/candlelight.mjs"],
