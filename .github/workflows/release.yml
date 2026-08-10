@@ -27,6 +27,22 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Materialize production portrait artwork
+        shell: bash
+        run: |
+          mkdir -p assets/ui
+          cat assets/ui/source/portrait-frame.webp.b64.* | tr -d '\n\r ' | base64 --decode > assets/ui/portrait-frame.webp
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('assets/ui/portrait-frame.webp')
+          data = p.read_bytes()
+          if len(data) < 30000:
+              raise SystemExit(f'Portrait frame WebP is unexpectedly small: {len(data)} bytes')
+          if data[:4] != b'RIFF' or data[8:12] != b'WEBP':
+              raise SystemExit('Portrait frame did not decode to a valid RIFF/WEBP file')
+          print(f'Portrait frame decoded successfully: {len(data)} bytes')
+          PY
+
       - name: Validate Foundry system source
         shell: bash
         run: |
@@ -34,6 +50,7 @@ jobs:
           test -f styles/candlelight.css
           test -f templates/character-sheet.hbs
           test -f assets/icons/spirits/wolf.webp
+          test -f assets/ui/portrait-frame.webp
           python - <<'PY'
           import json
           from pathlib import Path
@@ -48,8 +65,15 @@ jobs:
         shell: bash
         run: |
           rm -f candlelight.zip
-          zip -r candlelight.zip . -x '.git/*' '.github/*' 'candlelight.zip' '*.DS_Store'
+          zip -r candlelight.zip . \
+            -x '.git/*' \
+               '.github/*' \
+               'assets/ui/source/*' \
+               'assets/ui/portrait-frame-base.svg' \
+               'candlelight.zip' \
+               '*.DS_Store'
           unzip -l candlelight.zip | grep -q ' system.json$'
+          unzip -l candlelight.zip | grep -q ' assets/ui/portrait-frame.webp$'
 
       - name: Publish or refresh GitHub release
         uses: softprops/action-gh-release@v2
