@@ -1,5 +1,9 @@
 import { CandlelightRolls } from "./rolls.mjs";
 import { CandlelightCombat } from "./combat.mjs";
+import { CANDLELIGHT_CHALLENGES } from "./rules/challenges.mjs";
+
+// Keep the combat engine and every UI surface on the same canonical Challenge rules.
+CandlelightCombat.CHALLENGES = CANDLELIGHT_CHALLENGES;
 
 export class CandlelightActor extends Actor {
   getStat(key) { return this.system.statisticTotal?.(key) ?? 0; }
