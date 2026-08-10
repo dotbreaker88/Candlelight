@@ -5,7 +5,9 @@ const FRAME_HEX = Object.freeze({purple:"#a978d4",gold:"#d3a04c",red:"#c8585d",b
 const FRAME_IMAGE = "/systems/candlelight/assets/ui/portrait-frame.webp";
 const FRAME_LAYOUT = Object.freeze({width:320,height:470,portrait:{x:84,y:90,width:168,height:244},crest:{x:160,y:361,diameter:76},nameplate:{x:160,y:431,width:138,height:24}});
 
-/* Only exceptional silhouettes should need calibration. Normal centering is derived from the icon's visible alpha bounds. */
+/* Optical overrides remain available for genuinely exceptional silhouettes, but
+ * normal placement is now based on alpha-weighted visual mass rather than the
+ * center of the transparent canvas or the visible bounding rectangle. */
 const SPIRIT_CALIBRATION = Object.freeze({
   ant:{x:0,y:0,s:1},axolotl:{x:0,y:0,s:1},badger:{x:0,y:0,s:1},bat:{x:0,y:0,s:1},bear:{x:0,y:0,s:1},dragon:{x:0,y:0,s:1},fox:{x:0,y:0,s:1},hawk:{x:0,y:0,s:1},lion:{x:0,y:0,s:1},mantis:{x:0,y:0,s:1},mongoose:{x:0,y:0,s:1},monkey:{x:0,y:0,s:1},ox:{x:0,y:0,s:1},rabbit:{x:0,y:0,s:1},rat:{x:0,y:0,s:1},shark:{x:0,y:0,s:1},snake:{x:0,y:0,s:1},sphinx:{x:0,y:0,s:1},spider:{x:0,y:0,s:1},stag:{x:0,y:0,s:1},turtle:{x:0,y:0,s:1},vulture:{x:0,y:0,s:1},wolf:{x:0,y:0,s:1},phoenix:{x:0,y:0,s:1},barguest:{x:0,y:0,s:1},golem:{x:0,y:0,s:1},exile:{x:0,y:0,s:1},kraken:{x:0,y:0,s:1},thunderbird:{x:0,y:0,s:1},unicorn:{x:0,y:0,s:1}
 });
@@ -18,8 +20,39 @@ function bindSelect(select,value,path,actor,root){select.value=value??"";if(sele
 function ensureControls(root,actor){const key=currentSpiritKey(actor),color=currentFrameColor(actor);const controls=`<div class="cl-portrait-customizer cl-spirit-customizer" data-cl-spirit-customizer><label><span><i class="fa-solid fa-paw"></i> Spirit</span><select class="cl-custom-select" data-cl-spirit-select>${optionMarkup(CANDLELIGHT_SPIRITS,key,"Choose Spirit")}</select></label><label><span><i class="fa-solid fa-palette"></i> Frame</span><select class="cl-custom-select" data-cl-frame-select>${optionMarkup(CANDLELIGHT_FRAME_COLORS,color)}</select></label></div>`;if(!root.querySelector("[data-cl-spirit-customizer]"))root.querySelector(".cl-level-strip")?.insertAdjacentHTML("afterend",controls);if(!root.querySelector("[data-cl-spirit-tab-customizer]")){const sec=root.querySelector('[data-tab-panel="spirit"] section');sec?.querySelector("h2")?.insertAdjacentHTML("afterend",controls.replace("data-cl-spirit-customizer","data-cl-spirit-tab-customizer"));}for(const s of root.querySelectorAll("[data-cl-spirit-select]"))bindSelect(s,key,"system.spiritKey",actor,root);for(const s of root.querySelectorAll("[data-cl-frame-select]"))bindSelect(s,color,"system.portraitFrameColor",actor,root);}
 function neutralizeDuplicateLevelField(root){const el=root.querySelector('.cl-header .cl-summary input[name="system.level"]');if(!el)return;el.removeAttribute("name");el.readOnly=true;el.tabIndex=-1;el.title="Level is edited from the Core panel.";el.classList.add("cl-level-mirror");}
 function ensurePortraitFrameImage(portrait){let host=portrait.querySelector(":scope > .cl-portrait-frame-assets");if(!host){host=document.createElement("div");host.className="cl-portrait-frame-assets";host.setAttribute("aria-hidden","true");portrait.prepend(host);}let image=host.querySelector(".cl-production-frame-image");if(!image){image=document.createElement("img");image.className="cl-production-frame-image";image.alt="";image.decoding="async";image.draggable=false;image.addEventListener("error",()=>console.error(`Candlelight | Production portrait frame failed to load: ${FRAME_IMAGE}`),{once:true});host.replaceChildren(image);}if(!image.src.endsWith(FRAME_IMAGE))image.src=FRAME_IMAGE;return image;}
-function alphaBounds(ctx,w,h){const {data}=ctx.getImageData(0,0,w,h);let minX=w,minY=h,maxX=-1,maxY=-1;for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(data[(y*w+x)*4+3]<8)continue;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);}if(maxX<minX)return null;return{x:minX,y:minY,width:maxX-minX+1,height:maxY-minY+1};}
-function tintCanvas(canvas,src,tint,key=""){if(!canvas||!src)return;const size=Number(canvas.dataset.size||73);canvas.width=size;canvas.height=size;const out=canvas.getContext("2d");if(!out)return;const image=new Image();image.decoding="async";image.onload=()=>{const scratch=document.createElement("canvas");scratch.width=image.naturalWidth;scratch.height=image.naturalHeight;const sctx=scratch.getContext("2d",{willReadFrequently:true});if(!sctx)return;sctx.drawImage(image,0,0);const b=alphaBounds(sctx,scratch.width,scratch.height)??{x:0,y:0,width:scratch.width,height:scratch.height};const c=SPIRIT_CALIBRATION[key]??{x:0,y:0,s:1};const pad=Math.round(size*.10),avail=size-pad*2,scale=Math.min(avail/b.width,avail/b.height)*c.s;const width=b.width*scale,height=b.height*scale;/* Center the visible silhouette, not the source image canvas. This removes the common low/right bias caused by transparent padding in individual assets. */const x=(size-width)/2+c.x,y=(size-height)/2+c.y;out.clearRect(0,0,size,size);out.save();out.drawImage(scratch,b.x,b.y,b.width,b.height,x,y,width,height);out.globalCompositeOperation="source-in";out.fillStyle=tint;out.fillRect(0,0,size,size);out.restore();};image.onerror=()=>console.warn(`Candlelight | Could not load Spirit icon ${src}`);image.src=src;}
+
+function alphaMetrics(ctx,w,h){
+  const {data}=ctx.getImageData(0,0,w,h);
+  let minX=w,minY=h,maxX=-1,maxY=-1,sumA=0,sumX=0,sumY=0;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const a=data[(y*w+x)*4+3];
+    if(a<8)continue;
+    minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);
+    sumA+=a;sumX+=x*a;sumY+=y*a;
+  }
+  if(maxX<minX||sumA<=0)return null;
+  return {x:minX,y:minY,width:maxX-minX+1,height:maxY-minY+1,cx:sumX/sumA,cy:sumY/sumA};
+}
+
+function tintCanvas(canvas,src,tint,key=""){
+  if(!canvas||!src)return;
+  const size=Number(canvas.dataset.size||73);canvas.width=size;canvas.height=size;
+  const out=canvas.getContext("2d");if(!out)return;
+  const image=new Image();image.decoding="async";
+  image.onload=()=>{
+    const scratch=document.createElement("canvas");scratch.width=image.naturalWidth;scratch.height=image.naturalHeight;
+    const sctx=scratch.getContext("2d",{willReadFrequently:true});if(!sctx)return;sctx.drawImage(image,0,0);
+    const m=alphaMetrics(sctx,scratch.width,scratch.height)??{x:0,y:0,width:scratch.width,height:scratch.height,cx:scratch.width/2,cy:scratch.height/2};
+    const c=SPIRIT_CALIBRATION[key]??{x:0,y:0,s:1};
+    const pad=Math.round(size*.10),avail=size-pad*2,scale=Math.min(avail/m.width,avail/m.height)*c.s;
+    const width=m.width*scale,height=m.height*scale;
+    const centroidX=(m.cx-m.x)*scale,centroidY=(m.cy-m.y)*scale;
+    const x=(size/2)-centroidX+c.x,y=(size/2)-centroidY+c.y;
+    out.clearRect(0,0,size,size);out.save();out.drawImage(scratch,m.x,m.y,m.width,m.height,x,y,width,height);
+    out.globalCompositeOperation="source-in";out.fillStyle=tint;out.fillRect(0,0,size,size);out.restore();
+  };
+  image.onerror=()=>console.warn(`Candlelight | Could not load Spirit icon ${src}`);image.src=src;
+}
 function applyLayoutVariables(portrait){portrait.style.setProperty("--cl-frame-native-width",String(FRAME_LAYOUT.width));portrait.style.setProperty("--cl-frame-native-height",String(FRAME_LAYOUT.height));}
 function updatePortrait(root,actor){const portrait=root.querySelector(".cl-core-portrait");if(!portrait)return;const color=currentFrameColor(actor);portrait.classList.remove(...FRAME_CLASSES);portrait.classList.add(`cl-frame-${color}`);applyLayoutVariables(portrait);ensurePortraitFrameImage(portrait);const key=currentSpiritKey(actor);let crest=portrait.querySelector(".cl-portrait-spirit");if(!key){crest?.remove();portrait.classList.remove("cl-has-spirit");return;}portrait.classList.add("cl-has-spirit");const label=getSpiritLabel(key);if(!crest){crest=document.createElement("div");crest.className="cl-portrait-spirit";portrait.appendChild(crest);}crest.title=`${label} Spirit`;crest.innerHTML=`<canvas class="cl-spirit-canvas" data-size="73" role="img" aria-label="${esc(label)} Spirit icon"></canvas><span class="cl-portrait-spirit-name">${esc(label)}</span>`;tintCanvas(crest.querySelector("canvas"),getSpiritIcon(key),FRAME_HEX[color],key);}
 function updateSpiritTab(root,actor){const key=currentSpiritKey(actor);if(!key)return;const feature=root.querySelector('[data-tab-panel="spirit"] section .cl-feature-card');if(!feature)return;const color=currentFrameColor(actor);feature.classList.remove(...FRAME_CLASSES);feature.classList.add(`cl-frame-${color}`);const old=feature.querySelector("img,.cl-spirit-feature-mask,.cl-spirit-feature-canvas");const canvas=document.createElement("canvas");canvas.className="cl-spirit-feature-canvas";canvas.dataset.size="128";old?.replaceWith(canvas);if(!old)feature.prepend(canvas);tintCanvas(canvas,getSpiritIcon(key),FRAME_HEX[color],key);}
