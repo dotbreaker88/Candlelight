@@ -27,13 +27,18 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Install portrait build dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check pillow
+
       - name: Materialize production portrait artwork
         shell: bash
         run: |
           mkdir -p assets/ui
           python - <<'PY'
           from pathlib import Path
-          import base64, hashlib
+          import base64, hashlib, io
+          from PIL import Image, ImageOps
 
           files = sorted(Path('assets/ui/source').glob('portrait-frame.webp.b64.*'))
           text = ''.join(p.read_text() for p in files)
@@ -55,9 +60,6 @@ jobs:
               if candidate and hashlib.sha256(candidate).hexdigest() == expected_sha:
                   data = candidate
           elif len(text) == expected_length + 1:
-              # The GitHub text connector inserted one valid base64 character into chunk 01.
-              # Repair deterministically by accepting only the candidate whose decoded bytes
-              # exactly match the locally verified production artwork SHA-256.
               start, end = 17000, 34001
               for i in range(start, min(end, len(text))):
                   candidate_text = text[:i] + text[i+1:]
@@ -72,10 +74,25 @@ jobs:
           if data[:4] != b'RIFF' or data[8:12] != b'WEBP':
               raise SystemExit('Verified portrait frame is not RIFF/WEBP')
 
-          Path('assets/ui/portrait-frame.webp').write_bytes(data)
+          # The source artwork is intended to be bilaterally symmetric, but the
+          # exported right edge is visibly truncated in Foundry. Reconstruct the
+          # right half strictly from existing left-half pixels. This is an asset
+          # repair, not generated artwork, and keeps the original 320x470 contract.
+          src = Image.open(io.BytesIO(data)).convert('RGBA')
+          if src.size != (320, 470):
+              raise SystemExit(f'Unexpected portrait frame dimensions: {src.size}')
+          left = src.crop((0, 0, 160, 470))
+          repaired = src.copy()
+          repaired.paste(ImageOps.mirror(left), (160, 0))
+          repaired.save('assets/ui/portrait-frame.webp', 'WEBP', lossless=True, method=6)
+
+          out = Path('assets/ui/portrait-frame.webp').read_bytes()
+          if out[:4] != b'RIFF' or out[8:12] != b'WEBP':
+              raise SystemExit('Repaired portrait frame is not RIFF/WEBP')
           if repaired_at is not None:
               print(f'Repaired one connector-inserted base64 character at index {repaired_at}')
-          print(f'Portrait frame verified: {len(data)} bytes, sha256={hashlib.sha256(data).hexdigest()}')
+          print(f'Source portrait verified: sha256={hashlib.sha256(data).hexdigest()}')
+          print(f'Symmetric portrait frame built: {len(out)} bytes, sha256={hashlib.sha256(out).hexdigest()}')
           PY
 
       - name: Validate Foundry system source
@@ -89,11 +106,15 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
+          from PIL import Image
           data = json.loads(Path('system.json').read_text())
           required = ['id', 'title', 'version', 'manifest', 'download']
           missing = [key for key in required if not data.get(key)]
           if missing:
               raise SystemExit(f"Missing required manifest keys: {', '.join(missing)}")
+          with Image.open('assets/ui/portrait-frame.webp') as image:
+              if image.size != (320, 470):
+                  raise SystemExit(f'Portrait frame dimensions changed unexpectedly: {image.size}')
           PY
 
       - name: Build Foundry install archive
