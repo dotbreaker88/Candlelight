@@ -27,6 +27,11 @@ export class CandlelightCharacterSheet extends foundry.appv1.sheets.ActorSheet {
     const spiritIcon = getSpiritIcon(spirit);
     const byLoc = Object.fromEntries(Object.keys(LOCATION_LABELS).map(k => [k, armor.find(i => i.system.equipped && i.system.location === k) ?? null]));
 
+    // The Handlebars template addresses actor data through `system.*`.
+    // Explicitly expose the live system model so numeric inputs never render blank
+    // and later poison unrelated form submissions (for example portrait changes).
+    context.system = actor.system;
+
     context.cl = {
       tier: actor.system.tier,
       universalDifficulty: actor.system.universalDifficulty,
@@ -56,18 +61,28 @@ export class CandlelightCharacterSheet extends foundry.appv1.sheets.ActorSheet {
     return context;
   }
 
+  async _updateObject(event, formData) {
+    // AppV1 submits the whole form when a file picker closes. Never allow an
+    // empty/invalid numeric Level field to invalidate an otherwise unrelated
+    // Actor update. Valid Level edits are normalized before reaching the model.
+    if (Object.hasOwn(formData, "system.level")) {
+      const raw = formData["system.level"];
+      if (raw === "" || raw === null || raw === undefined) {
+        delete formData["system.level"];
+      } else {
+        const level = Number(raw);
+        if (Number.isFinite(level)) formData["system.level"] = Math.min(20, Math.max(1, Math.trunc(level)));
+        else delete formData["system.level"];
+      }
+    }
+    await this.actor.update(formData);
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
-
     this._activateTab(html, this._activeCandlelightTab ?? "core");
-
-    html.find("[data-tab-button]").on("click", e => {
-      this._activeCandlelightTab = e.currentTarget.dataset.tabButton;
-      this._activateTab(html, this._activeCandlelightTab);
-    });
-
+    html.find("[data-tab-button]").on("click", e => {this._activeCandlelightTab = e.currentTarget.dataset.tabButton;this._activateTab(html, this._activeCandlelightTab);});
     if (!this.isEditable) return;
-
     html.find("[data-action='roll-stat']").on("click", e => this.actor.rollTest(e.currentTarget.dataset.stat));
     html.find("[data-action='edit-stat']").on("click", e => this._editStatistic(e.currentTarget.dataset.stat));
     html.find("[data-action='initiative']").on("click", () => this.actor.rollInitiativeCandlelight());
@@ -82,102 +97,42 @@ export class CandlelightCharacterSheet extends foundry.appv1.sheets.ActorSheet {
     html.find("[data-action='create-candlelight-effect']").on("click", e => this._createCandlelightEffect(e.currentTarget.dataset.effectKey));
     html.find("[data-action='edit-effect']").on("click", e => this.actor.effects.get(e.currentTarget.dataset.effectId)?.sheet.render(true));
     html.find("[data-action='delete-effect']").on("click", e => this.actor.deleteEmbeddedDocuments("ActiveEffect", [e.currentTarget.dataset.effectId]));
-    html.find("[data-action='toggle-effect']").on("click", async e => {
-      const effect=this.actor.effects.get(e.currentTarget.dataset.effectId); if(effect) await effect.update({disabled:!effect.disabled});
-    });
+    html.find("[data-action='toggle-effect']").on("click", async e => {const effect=this.actor.effects.get(e.currentTarget.dataset.effectId);if(effect)await effect.update({disabled:!effect.disabled});});
   }
 
   _activateTab(html, tab) {
     const validTabs = new Set(["core", "gear", "effects", "talents", "spirit", "element", "heritage"]);
     if (!validTabs.has(tab)) tab = "core";
     this._activeCandlelightTab = tab;
-
     html.find("[data-tab-button]").removeClass("active").attr("aria-selected", "false");
     html.find(`[data-tab-button='${tab}']`).addClass("active").attr("aria-selected", "true");
-
     html.find("[data-tab-panel]").removeClass("active");
     html.find(`[data-tab-panel='${tab}']`).addClass("active");
   }
 
   async _editStatistic(key) {
-    const stat = this.actor.system.statistics?.[key];
-    if (!stat) return;
-
+    const stat = this.actor.system.statistics?.[key]; if (!stat) return;
     const label = key.charAt(0).toUpperCase() + key.slice(1);
-
-    const result = await foundry.applications.api.DialogV2.input({
-      window: {title: `Edit ${label}`},
-      content: `
-        <div class="candlelight cl-stat-editor">
-          <p class="hint">Manual override editor. Normal character creation/progression should eventually manage these values automatically.</p>
-          <label>Base <input type="number" name="base" value="${stat.base ?? 0}"></label>
-          <label>Heritage <input type="number" name="heritage" value="${stat.heritage ?? 0}"></label>
-          <label>Theme <input type="number" name="theme" value="${stat.theme ?? 0}"></label>
-          <label>Temporary <input type="number" name="other" value="${stat.other ?? 0}"></label>
-        </div>`,
-      ok: {label: "Apply"},
-      rejectClose: false
-    });
-
+    const result = await foundry.applications.api.DialogV2.input({window:{title:`Edit ${label}`},content:`<div class="candlelight cl-stat-editor"><p class="hint">Manual override editor. Normal character creation/progression should eventually manage these values automatically.</p><label>Base <input type="number" name="base" value="${stat.base ?? 0}"></label><label>Heritage <input type="number" name="heritage" value="${stat.heritage ?? 0}"></label><label>Theme <input type="number" name="theme" value="${stat.theme ?? 0}"></label><label>Temporary <input type="number" name="other" value="${stat.other ?? 0}"></label></div>`,ok:{label:"Apply"},rejectClose:false});
     if (result === null) return;
-
-    const getValue = name => {
-      if (typeof result?.get === "function") return Number(result.get(name) ?? 0) || 0;
-      if (result?.object && name in result.object) return Number(result.object[name] ?? 0) || 0;
-      if (name in (result ?? {})) return Number(result[name] ?? 0) || 0;
-      return 0;
-    };
-
-    await this.actor.update({
-      [`system.statistics.${key}.base`]: getValue("base"),
-      [`system.statistics.${key}.heritage`]: getValue("heritage"),
-      [`system.statistics.${key}.theme`]: getValue("theme"),
-      [`system.statistics.${key}.other`]: getValue("other")
-    });
+    const getValue = name => {if(typeof result?.get==="function")return Number(result.get(name)??0)||0;if(result?.object&&name in result.object)return Number(result.object[name]??0)||0;if(name in (result??{}))return Number(result[name]??0)||0;return 0;};
+    await this.actor.update({[`system.statistics.${key}.base`]:getValue("base"),[`system.statistics.${key}.heritage`]:getValue("heritage"),[`system.statistics.${key}.theme`]:getValue("theme"),[`system.statistics.${key}.other`]:getValue("other")});
   }
 
-  async _deleteItem(id) {
-    const item=this.actor.items.get(id); if(!item) return;
-    const ok = await foundry.applications.api.DialogV2.confirm({window:{title:"Remove Item"}, content:`<p>Remove <strong>${foundry.utils.escapeHTML(item.name)}</strong> from ${foundry.utils.escapeHTML(this.actor.name)}?</p>`});
-    if(ok) await this.actor.deleteEmbeddedDocuments("Item", [id]);
-  }
-
-  async _toggleEquip(id) {
-    const item=this.actor.items.get(id); if(!item || item.system.equipped === undefined) return;
-    const equip=!item.system.equipped;
-    if(equip && item.type === "armor") {
-      const conflicts=this.actor.items.filter(i => i.type === "armor" && i.id !== item.id && i.system.equipped && i.system.location === item.system.location);
-      if(conflicts.length) await this.actor.updateEmbeddedDocuments("Item", conflicts.map(i => ({_id:i.id,"system.equipped":false})));
-    }
-    await item.update({"system.equipped":equip});
-  }
-
-  async _createCandlelightEffect(key) {
-    const presets = {
-      embolden: {name:"Embolden",icon:"icons/svg/upgrade.svg",polarity:"positive",mode:"best",description:"While active, applicable dice rolls are made twice and the better result is kept."},
-      dishearten: {name:"Dishearten",icon:"icons/svg/downgrade.svg",polarity:"negative",mode:"worst",description:"While active, applicable dice rolls are made twice and the worse result is kept."}
-    };
-    const preset = presets[key]; if (!preset) return;
-    const existing = [...this.actor.effects].find(e => String(e.name ?? "").toLowerCase() === preset.name.toLowerCase());
-    if (existing) {if (existing.disabled) await existing.update({disabled:false});return ui.notifications.info(`Candlelight | ${preset.name} is already present on ${this.actor.name}.`);}
-    await this.actor.createEmbeddedDocuments("ActiveEffect", [{name:preset.name,icon:preset.icon,disabled:false,description:preset.description,flags:{candlelight:{polarity:preset.polarity,rollTwice:preset.mode,systemEffect:key}}}]);
-  }
-
-  async _createEffect(polarity="neutral") {
-    const label = polarity === "positive" ? "New Positive Effect" : polarity === "negative" ? "New Negative Effect" : "New Effect";
-    const [effect] = await this.actor.createEmbeddedDocuments("ActiveEffect", [{name:label, icon:"icons/svg/aura.svg", disabled:false, flags:{candlelight:{polarity}}}]);
-    effect?.sheet.render(true);
-  }
+  async _deleteItem(id) {const item=this.actor.items.get(id);if(!item)return;const ok=await foundry.applications.api.DialogV2.confirm({window:{title:"Remove Item"},content:`<p>Remove <strong>${foundry.utils.escapeHTML(item.name)}</strong> from ${foundry.utils.escapeHTML(this.actor.name)}?</p>`});if(ok)await this.actor.deleteEmbeddedDocuments("Item",[id]);}
+  async _toggleEquip(id) {const item=this.actor.items.get(id);if(!item||item.system.equipped===undefined)return;const equip=!item.system.equipped;if(equip&&item.type==="armor"){const conflicts=this.actor.items.filter(i=>i.type==="armor"&&i.id!==item.id&&i.system.equipped&&i.system.location===item.system.location);if(conflicts.length)await this.actor.updateEmbeddedDocuments("Item",conflicts.map(i=>({_id:i.id,"system.equipped":false})));}await item.update({"system.equipped":equip});}
+  async _createCandlelightEffect(key) {const presets={embolden:{name:"Embolden",icon:"icons/svg/upgrade.svg",polarity:"positive",mode:"best",description:"While active, applicable dice rolls are made twice and the better result is kept."},dishearten:{name:"Dishearten",icon:"icons/svg/downgrade.svg",polarity:"negative",mode:"worst",description:"While active, applicable dice rolls are made twice and the worse result is kept."}};const preset=presets[key];if(!preset)return;const existing=[...this.actor.effects].find(e=>String(e.name??"").toLowerCase()===preset.name.toLowerCase());if(existing){if(existing.disabled)await existing.update({disabled:false});return ui.notifications.info(`Candlelight | ${preset.name} is already present on ${this.actor.name}.`);}await this.actor.createEmbeddedDocuments("ActiveEffect",[{name:preset.name,icon:preset.icon,disabled:false,description:preset.description,flags:{candlelight:{polarity:preset.polarity,rollTwice:preset.mode,systemEffect:key}}}]);}
+  async _createEffect(polarity="neutral") {const label=polarity==="positive"?"New Positive Effect":polarity==="negative"?"New Negative Effect":"New Effect";const [effect]=await this.actor.createEmbeddedDocuments("ActiveEffect",[{name:label,icon:"icons/svg/aura.svg",disabled:false,flags:{candlelight:{polarity}}}]);effect?.sheet.render(true);}
 }
 
 export class CandlelightLootSheet extends foundry.appv1.sheets.ActorSheet {
-  static get defaultOptions() {return foundry.utils.mergeObject(super.defaultOptions, {classes:["candlelight","sheet","actor","loot"], template:"systems/candlelight/templates/loot-sheet.hbs", width:420, height:360, resizable:true});}
-  async getData(options={}) { const c=await super.getData(options); c.cl={items:[...this.actor.items]}; return c; }
-  activateListeners(html) { super.activateListeners(html); html.find("[data-action='pickup']").on("click", e => CandlelightLoot.pickup(this.actor, e.currentTarget.dataset.itemId)); html.find("[data-action='pickup-all']").on("click", () => CandlelightLoot.pickup(this.actor)); }
+  static get defaultOptions(){return foundry.utils.mergeObject(super.defaultOptions,{classes:["candlelight","sheet","actor","loot"],template:"systems/candlelight/templates/loot-sheet.hbs",width:420,height:360,resizable:true});}
+  async getData(options={}){const c=await super.getData(options);c.cl={items:[...this.actor.items]};return c;}
+  activateListeners(html){super.activateListeners(html);html.find("[data-action='pickup']").on("click",e=>CandlelightLoot.pickup(this.actor,e.currentTarget.dataset.itemId));html.find("[data-action='pickup-all']").on("click",()=>CandlelightLoot.pickup(this.actor));}
 }
 
 export class CandlelightItemSheet extends foundry.appv1.sheets.ItemSheet {
-  static get defaultOptions() {return foundry.utils.mergeObject(super.defaultOptions, {classes:["candlelight","sheet","item"],template:"systems/candlelight/templates/item-sheet.hbs",width:520,height:600,resizable:true,submitOnChange:true,closeOnSubmit:false});}
-  async getData(options={}) { const c=await super.getData(options); c.system=this.item.system; return c; }
-  async _updateObject(event,formData) { await this.item.update(formData); }
+  static get defaultOptions(){return foundry.utils.mergeObject(super.defaultOptions,{classes:["candlelight","sheet","item"],template:"systems/candlelight/templates/item-sheet.hbs",width:520,height:600,resizable:true,submitOnChange:true,closeOnSubmit:false});}
+  async getData(options={}){const c=await super.getData(options);c.system=this.item.system;return c;}
+  async _updateObject(event,formData){await this.item.update(formData);}
 }
