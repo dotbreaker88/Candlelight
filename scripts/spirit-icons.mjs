@@ -12,7 +12,7 @@ const SPIRITS = Object.freeze({
 const SPIRIT_ALIASES = Object.freeze({barghest: "barguest"});
 
 export const CANDLELIGHT_FRAME_COLORS = Object.freeze({
-  purple: "Purple", gold: "Gold", red: "Red", blue: "Blue", green: "Green", teal: "Teal"
+  purple: "Purple", gold: "Gold", red: "Red", blue: "Blue", green: "Green", white: "White"
 });
 
 export function normalizeSpiritKey(value) {
