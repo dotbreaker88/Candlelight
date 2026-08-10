@@ -1,8 +1,8 @@
 const CHALLENGES = Object.freeze([
   {key:"dodge", label:"Dodge", stat:"agility", icon:"fa-person-running"},
-  {key:"parry", label:"Parry", stat:"prowess", icon:"fa-sword"},
-  {key:"block", label:"Block", stat:"toughness", icon:"fa-shield-halved"},
-  {key:"standTall", label:"Stand Tall", stat:"willpower", icon:"fa-person-rays"}
+  {key:"parry", label:"Parry", stat:"dexterity", icon:"fa-sword"},
+  {key:"block", label:"Block", stat:"strength", icon:"fa-shield-halved"},
+  {key:"standTall", label:"Stand Tall", stat:"toughness", icon:"fa-person-rays"}
 ]);
 
 function ensureChallengePanel(root, actor) {
