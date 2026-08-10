@@ -2,11 +2,11 @@
   "id": "candlelight",
   "title": "Candlelight",
   "description": "Candlelight tabletop roleplaying game system for Foundry Virtual Tabletop.",
-  "version": "0.6.13",
+  "version": "0.6.14",
   "compatibility": {"minimum":"14","verified":"14"},
   "authors": [{"name":"Candlelight"}],
   "esmodules": ["scripts/candlelight.mjs"],
-  "styles": ["styles/candlelight.css","styles/spirit-portrait.css","styles/portrait-ornate.css","styles/challenges.css"],
+  "styles": ["styles/candlelight.css","styles/spirit-portrait.css","styles/portrait-ornate.css","styles/challenges.css","styles/core-layout.css"],
   "languages": [{"lang":"en","name":"English","path":"lang/en.json"}],
   "documentTypes": {
     "Actor": {"character":{},"loot":{}},
