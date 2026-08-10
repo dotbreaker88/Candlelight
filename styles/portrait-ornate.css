@@ -1,25 +1,25 @@
-/* v0.6.4 — production frame is a normal WebP asset generated into the Foundry release. */
-.candlelight-sheet .cl-core-hero{grid-template-columns:338px minmax(0,1fr)!important;gap:30px!important;align-items:start!important}
-.candlelight-sheet .cl-core-portrait{position:relative!important;width:320px!important;height:470px!important;min-height:470px!important;margin:0 auto!important;padding:0!important;overflow:visible!important;isolation:isolate;background:none!important}
+/* v0.6.5 — production frame sizing and alignment refinement. */
+.candlelight-sheet .cl-core-hero{grid-template-columns:352px minmax(0,1fr)!important;gap:24px!important;align-items:start!important;overflow:visible!important}
+.candlelight-sheet .cl-core-portrait{position:relative!important;width:336px!important;height:470px!important;min-height:470px!important;margin:0!important;padding:0 8px!important;box-sizing:border-box!important;overflow:visible!important;isolation:isolate;background:none!important}
 .candlelight-sheet .cl-core-portrait::before,.candlelight-sheet .cl-core-portrait::after{content:none!important;display:none!important}
 .candlelight-sheet .cl-portrait-frame-ornaments,.candlelight-sheet>.cl-portrait-frame-asset{display:none!important}
 
-.candlelight-sheet .cl-portrait-frame-assets{position:absolute;inset:0;z-index:6;pointer-events:none;display:block;overflow:visible}
-.candlelight-sheet .cl-production-frame-image{position:absolute;inset:0;width:320px!important;height:470px!important;display:block!important;object-fit:fill!important;border:0!important;outline:0!important;max-width:none!important;transform-origin:center;transition:filter .16s ease;filter:none}
+.candlelight-sheet .cl-portrait-frame-assets{position:absolute;left:8px;top:0;width:320px;height:470px;z-index:6;pointer-events:none;display:block;overflow:visible}
+.candlelight-sheet .cl-production-frame-image{position:absolute;inset:0;width:320px!important;height:470px!important;display:block!important;object-fit:fill!important;border:0!important;outline:0!important;max-width:none!important;transform:none!important;transform-origin:center;transition:filter .16s ease;filter:none}
 
-/* The production artwork is silver + purple. Hue rotation changes its saturated enamel/gems while neutral silver remains essentially unchanged. */
+/* The production artwork is silver + purple. Hue rotation changes saturated enamel/gems while leaving the neutral metal largely intact. */
 .candlelight-sheet .cl-frame-purple .cl-production-frame-image{filter:none}
 .candlelight-sheet .cl-frame-red .cl-production-frame-image{filter:hue-rotate(76deg) saturate(1.12)}
 .candlelight-sheet .cl-frame-gold .cl-production-frame-image{filter:hue-rotate(126deg) saturate(.92) brightness(1.05)}
 .candlelight-sheet .cl-frame-blue .cl-production-frame-image{filter:hue-rotate(292deg) saturate(1.05)}
 .candlelight-sheet .cl-frame-green .cl-production-frame-image{filter:hue-rotate(205deg) saturate(1.02)}
-.candlelight-sheet .cl-frame-teal .cl-production-frame-image{filter:hue-rotate(252deg) saturate(1.02)}
+.candlelight-sheet .cl-frame-white .cl-production-frame-image{filter:grayscale(1) brightness(1.22) contrast(.94)}
 
-/* Measured portrait opening in the 320x470 production artwork. */
-.candlelight-sheet .cl-core-portrait>.cl-character-portrait{position:absolute!important;z-index:2!important;left:var(--cl-portrait-x,84px)!important;top:var(--cl-portrait-y,90px)!important;width:var(--cl-portrait-width,168px)!important;height:var(--cl-portrait-height,244px)!important;transform:none!important;object-fit:cover!important;border:0!important;border-radius:0!important;outline:0!important;background:#030404!important;box-shadow:none!important}
+/* Measured portrait opening in the 320x470 production artwork. The 8px host gutter protects both outer frame edges. */
+.candlelight-sheet .cl-core-portrait>.cl-character-portrait{position:absolute!important;z-index:2!important;left:calc(var(--cl-portrait-x,84px) + 8px)!important;top:var(--cl-portrait-y,90px)!important;width:var(--cl-portrait-width,168px)!important;height:var(--cl-portrait-height,244px)!important;transform:none!important;object-fit:cover!important;border:0!important;border-radius:0!important;outline:0!important;background:#030404!important;box-shadow:none!important}
 
 /* Spirit icon is positioned independently inside the transparent circular opening. */
-.candlelight-sheet .cl-core-portrait .cl-portrait-spirit{position:absolute!important;left:var(--cl-crest-x,168px)!important;top:calc(var(--cl-crest-y,361px) - (var(--cl-crest-size,76px) / 2))!important;bottom:auto!important;z-index:7!important;width:var(--cl-crest-size,76px)!important;height:116px!important;min-height:0!important;transform:translateX(-50%)!important;display:block!important;pointer-events:none!important;filter:none!important}
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit{position:absolute!important;left:calc(var(--cl-crest-x,160px) + 8px)!important;top:calc(var(--cl-crest-y,361px) - (var(--cl-crest-size,76px) / 2))!important;bottom:auto!important;z-index:7!important;width:var(--cl-crest-size,76px)!important;height:116px!important;min-height:0!important;transform:translateX(-50%)!important;display:block!important;pointer-events:none!important;filter:none!important}
 .candlelight-sheet .cl-core-portrait .cl-spirit-canvas{position:absolute!important;left:50%!important;top:0!important;width:76px!important;height:76px!important;transform:translateX(-50%)!important;display:block!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.85)) drop-shadow(0 0 3px var(--cl-frame-glow))!important}
 .candlelight-sheet .cl-core-portrait .cl-spirit-medallion,.candlelight-sheet .cl-core-portrait .cl-spirit-medallion-inner{display:contents!important}
 
@@ -28,4 +28,4 @@
 .candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name::before,.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name::after{content:none!important}
 
 .candlelight-sheet .cl-spirit-feature-canvas{flex:0 0 96px;width:96px!important;height:96px!important;object-fit:contain;filter:drop-shadow(0 0 5px var(--cl-frame-glow))}
-@media(max-width:900px){.candlelight-sheet .cl-core-hero{grid-template-columns:300px minmax(0,1fr)!important}.candlelight-sheet .cl-core-portrait{transform:scale(.9);transform-origin:top left;margin-bottom:-47px!important}}
+@media(max-width:900px){.candlelight-sheet .cl-core-hero{grid-template-columns:318px minmax(0,1fr)!important}.candlelight-sheet .cl-core-portrait{transform:scale(.9);transform-origin:top left;margin-bottom:-47px!important}}
