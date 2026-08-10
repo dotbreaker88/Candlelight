@@ -1,4 +1,5 @@
 import "./spirit-customization.mjs";
+import "./challenges.mjs";
 import {CharacterData,LootData,WeaponData,ArmorData,AbilityData,TalentData,HeritageData,ThemeData,ClassData,SpiritData,ElementData,EquipmentData,MassiveWoundData} from "./data/models.mjs";
 import {CandlelightActor,CandlelightItem} from "./documents.mjs";
 import {CandlelightCharacterSheet,CandlelightLootSheet,CandlelightItemSheet} from "./sheets/sheets.mjs";
@@ -6,7 +7,7 @@ import {CandlelightRolls} from "./rolls.mjs";
 import {CandlelightLoot} from "./loot.mjs";
 
 Hooks.once("init",()=>{
-  console.log("Candlelight | Initializing v0.6.7");
+  console.log("Candlelight | Initializing v0.6.8");
   CONFIG.Actor.documentClass=CandlelightActor; CONFIG.Item.documentClass=CandlelightItem;
   CONFIG.Actor.dataModels={character:CharacterData,loot:LootData};
   CONFIG.Item.dataModels={weapon:WeaponData,armor:ArmorData,accessory:EquipmentData,equipment:EquipmentData,ability:AbilityData,talent:TalentData,heritage:HeritageData,theme:ThemeData,class:ClassData,spirit:SpiritData,element:ElementData,massiveWound:MassiveWoundData};
