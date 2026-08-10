@@ -44,7 +44,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       }),
       portraitFrameColor: new StringField({
         required: true, nullable: false, initial: "gold",
-        choices: ["purple", "gold", "red", "blue", "green", "teal"]
+        choices: ["purple", "gold", "red", "blue", "green", "white"]
       }),
       state: new SchemaField({
         dead: new BooleanField({required: true, nullable: false, initial: false}),
@@ -180,12 +180,9 @@ export class MassiveWoundData extends DescribedItemData {
   }
 }
 
-
 export class LootData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return {
-      note: new StringField({required:false, nullable:true, initial:"Dropped item"})
-    };
+    return {note: new StringField({required:false, nullable:true, initial:"Dropped item"})};
   }
 }
 
