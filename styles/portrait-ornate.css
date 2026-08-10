@@ -1,13 +1,13 @@
-/* v0.6.5 — production frame sizing and alignment refinement. */
+/* v0.6.6 — unified production-frame coordinate system. */
 .candlelight-sheet .cl-core-hero{grid-template-columns:352px minmax(0,1fr)!important;gap:24px!important;align-items:start!important;overflow:visible!important}
-.candlelight-sheet .cl-core-portrait{position:relative!important;width:336px!important;height:470px!important;min-height:470px!important;margin:0!important;padding:0 8px!important;box-sizing:border-box!important;overflow:visible!important;isolation:isolate;background:none!important}
+.candlelight-sheet .cl-core-portrait{position:relative!important;width:336px!important;height:452px!important;min-height:452px!important;margin:0!important;padding:0!important;box-sizing:border-box!important;overflow:visible!important;isolation:isolate;background:none!important}
 .candlelight-sheet .cl-core-portrait::before,.candlelight-sheet .cl-core-portrait::after{content:none!important;display:none!important}
 .candlelight-sheet .cl-portrait-frame-ornaments,.candlelight-sheet>.cl-portrait-frame-asset{display:none!important}
 
-.candlelight-sheet .cl-portrait-frame-assets{position:absolute;left:8px;top:0;width:320px;height:470px;z-index:6;pointer-events:none;display:block;overflow:visible}
-.candlelight-sheet .cl-production-frame-image{position:absolute;inset:0;width:320px!important;height:470px!important;display:block!important;object-fit:fill!important;border:0!important;outline:0!important;max-width:none!important;transform:none!important;transform-origin:center;transition:filter .16s ease;filter:none}
+/* Render the 320x470 production art at a fixed 96% scale with generous horizontal breathing room. */
+.candlelight-sheet .cl-portrait-frame-assets{position:absolute;left:14px;top:0;width:307px;height:451px;z-index:6;pointer-events:none;display:block;overflow:visible}
+.candlelight-sheet .cl-production-frame-image{position:absolute;inset:0;width:307px!important;height:451px!important;display:block!important;object-fit:fill!important;border:0!important;outline:0!important;max-width:none!important;transform:none!important;transition:filter .16s ease;filter:none}
 
-/* The production artwork is silver + purple. Hue rotation changes saturated enamel/gems while leaving the neutral metal largely intact. */
 .candlelight-sheet .cl-frame-purple .cl-production-frame-image{filter:none}
 .candlelight-sheet .cl-frame-red .cl-production-frame-image{filter:hue-rotate(76deg) saturate(1.12)}
 .candlelight-sheet .cl-frame-gold .cl-production-frame-image{filter:hue-rotate(126deg) saturate(.92) brightness(1.05)}
@@ -15,17 +15,14 @@
 .candlelight-sheet .cl-frame-green .cl-production-frame-image{filter:hue-rotate(205deg) saturate(1.02)}
 .candlelight-sheet .cl-frame-white .cl-production-frame-image{filter:grayscale(1) brightness(1.22) contrast(.94)}
 
-/* Measured portrait opening in the 320x470 production artwork. The 8px host gutter protects both outer frame edges. */
-.candlelight-sheet .cl-core-portrait>.cl-character-portrait{position:absolute!important;z-index:2!important;left:calc(var(--cl-portrait-x,84px) + 8px)!important;top:var(--cl-portrait-y,90px)!important;width:var(--cl-portrait-width,168px)!important;height:var(--cl-portrait-height,244px)!important;transform:none!important;object-fit:cover!important;border:0!important;border-radius:0!important;outline:0!important;background:#030404!important;box-shadow:none!important}
-
-/* Spirit icon is positioned independently inside the transparent circular opening. */
-.candlelight-sheet .cl-core-portrait .cl-portrait-spirit{position:absolute!important;left:calc(var(--cl-crest-x,160px) + 8px)!important;top:calc(var(--cl-crest-y,361px) - (var(--cl-crest-size,76px) / 2))!important;bottom:auto!important;z-index:7!important;width:var(--cl-crest-size,76px)!important;height:116px!important;min-height:0!important;transform:translateX(-50%)!important;display:block!important;pointer-events:none!important;filter:none!important}
-.candlelight-sheet .cl-core-portrait .cl-spirit-canvas{position:absolute!important;left:50%!important;top:0!important;width:76px!important;height:76px!important;transform:translateX(-50%)!important;display:block!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.85)) drop-shadow(0 0 3px var(--cl-frame-glow))!important}
+/* All dynamic layers use the same 0.96 scale as the production artwork. */
+.candlelight-sheet .cl-core-portrait>.cl-character-portrait{position:absolute!important;z-index:2!important;left:95px!important;top:86px!important;width:161px!important;height:234px!important;transform:none!important;object-fit:cover!important;border:0!important;border-radius:0!important;outline:0!important;background:#030404!important;box-shadow:none!important}
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit{position:absolute!important;left:168px!important;top:310px!important;bottom:auto!important;z-index:7!important;width:73px!important;height:112px!important;min-height:0!important;transform:translateX(-50%)!important;display:block!important;pointer-events:none!important;filter:none!important}
+.candlelight-sheet .cl-core-portrait .cl-spirit-canvas{position:absolute!important;left:50%!important;top:0!important;width:73px!important;height:73px!important;transform:translateX(-50%)!important;display:block!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.85)) drop-shadow(0 0 3px var(--cl-frame-glow))!important}
 .candlelight-sheet .cl-core-portrait .cl-spirit-medallion,.candlelight-sheet .cl-core-portrait .cl-spirit-medallion-inner{display:contents!important}
-
-/* Dynamic Spirit name is the only content laid over the rendered nameplate. */
-.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name{position:absolute!important;left:50%!important;top:calc(var(--cl-nameplate-y,431px) - (var(--cl-crest-y,361px) - (var(--cl-crest-size,76px) / 2)))!important;transform:translateX(-50%)!important;width:var(--cl-nameplate-width,138px)!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;clip-path:none!important;box-shadow:none!important;color:#d9dde3!important;font-family:Georgia,"Times New Roman",serif!important;font-size:10px!important;font-weight:700!important;line-height:1!important;letter-spacing:.12em!important;text-align:center!important;text-transform:uppercase!important;white-space:nowrap!important;text-shadow:0 1px 2px #000,0 0 3px var(--cl-frame-glow)!important}
+.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name{position:absolute!important;left:50%!important;top:104px!important;transform:translateX(-50%)!important;width:132px!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;clip-path:none!important;box-shadow:none!important;color:#d9dde3!important;font-family:Georgia,"Times New Roman",serif!important;font-size:10px!important;font-weight:700!important;line-height:1!important;letter-spacing:.12em!important;text-align:center!important;text-transform:uppercase!important;white-space:nowrap!important;text-shadow:0 1px 2px #000,0 0 3px var(--cl-frame-glow)!important}
 .candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name::before,.candlelight-sheet .cl-core-portrait .cl-portrait-spirit-name::after{content:none!important}
-
 .candlelight-sheet .cl-spirit-feature-canvas{flex:0 0 96px;width:96px!important;height:96px!important;object-fit:contain;filter:drop-shadow(0 0 5px var(--cl-frame-glow))}
-@media(max-width:900px){.candlelight-sheet .cl-core-hero{grid-template-columns:318px minmax(0,1fr)!important}.candlelight-sheet .cl-core-portrait{transform:scale(.9);transform-origin:top left;margin-bottom:-47px!important}}
+
+/* Do not independently scale the portrait assembly at narrower sheet widths. */
+@media(max-width:900px){.candlelight-sheet .cl-core-hero{grid-template-columns:336px minmax(0,1fr)!important;gap:16px!important}.candlelight-sheet .cl-core-portrait{transform:none!important;margin-bottom:0!important}}
