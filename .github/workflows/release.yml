@@ -31,25 +31,51 @@ jobs:
         shell: bash
         run: |
           mkdir -p assets/ui
-          cat assets/ui/source/portrait-frame.webp.b64.* | tr -cd 'A-Za-z0-9+/=' > /tmp/portrait-frame.b64
           python - <<'PY'
           from pathlib import Path
-          p = Path('/tmp/portrait-frame.b64')
-          text = p.read_text()
-          expected = 66488
-          if len(text) != expected:
-              raise SystemExit(f'Portrait frame base64 length mismatch: expected {expected}, got {len(text)}')
-          PY
-          base64 --decode /tmp/portrait-frame.b64 > assets/ui/portrait-frame.webp
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('assets/ui/portrait-frame.webp')
-          data = p.read_bytes()
-          if len(data) < 30000:
-              raise SystemExit(f'Portrait frame WebP is unexpectedly small: {len(data)} bytes')
+          import base64, hashlib
+
+          files = sorted(Path('assets/ui/source').glob('portrait-frame.webp.b64.*'))
+          text = ''.join(p.read_text() for p in files)
+          text = ''.join(ch for ch in text if ch.isalnum() or ch in '+/=')
+
+          expected_length = 66488
+          expected_sha = '9add0d0e47df421e111ca9f8e715d58883155d60502fb513a43685df38e04d11'
+
+          def decode(candidate):
+              try:
+                  return base64.b64decode(candidate, validate=True)
+              except Exception:
+                  return None
+
+          data = None
+          repaired_at = None
+          if len(text) == expected_length:
+              candidate = decode(text)
+              if candidate and hashlib.sha256(candidate).hexdigest() == expected_sha:
+                  data = candidate
+          elif len(text) == expected_length + 1:
+              # The GitHub text connector inserted one valid base64 character into chunk 01.
+              # Repair deterministically by accepting only the candidate whose decoded bytes
+              # exactly match the locally verified production artwork SHA-256.
+              start, end = 17000, 34001
+              for i in range(start, min(end, len(text))):
+                  candidate_text = text[:i] + text[i+1:]
+                  candidate = decode(candidate_text)
+                  if candidate and hashlib.sha256(candidate).hexdigest() == expected_sha:
+                      data = candidate
+                      repaired_at = i
+                      break
+
+          if data is None:
+              raise SystemExit(f'Could not reconstruct verified portrait frame from {len(text)} base64 characters')
           if data[:4] != b'RIFF' or data[8:12] != b'WEBP':
-              raise SystemExit('Portrait frame did not decode to a valid RIFF/WEBP file')
-          print(f'Portrait frame decoded successfully: {len(data)} bytes')
+              raise SystemExit('Verified portrait frame is not RIFF/WEBP')
+
+          Path('assets/ui/portrait-frame.webp').write_bytes(data)
+          if repaired_at is not None:
+              print(f'Repaired one connector-inserted base64 character at index {repaired_at}')
+          print(f'Portrait frame verified: {len(data)} bytes, sha256={hashlib.sha256(data).hexdigest()}')
           PY
 
       - name: Validate Foundry system source
