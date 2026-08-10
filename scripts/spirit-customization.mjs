@@ -1,7 +1,7 @@
 import { CANDLELIGHT_FRAME_COLORS, CANDLELIGHT_SPIRITS, getSpiritIcon, getSpiritKey, getSpiritLabel } from "./spirit-icons.mjs";
 
 const FRAME_CLASSES = Object.keys(CANDLELIGHT_FRAME_COLORS).map(key => `cl-frame-${key}`);
-const FRAME_HEX = Object.freeze({purple:"#a978d4",gold:"#d3a04c",red:"#c8585d",blue:"#5d8fd5",green:"#77a95e",teal:"#4daaaa"});
+const FRAME_HEX = Object.freeze({purple:"#a978d4",gold:"#d3a04c",red:"#c8585d",blue:"#5d8fd5",green:"#77a95e",white:"#f1f1ee"});
 const FRAME_IMAGE = "/systems/candlelight/assets/ui/portrait-frame.webp";
 
 // Coordinates are measured against the 320x470 production frame artwork.
@@ -9,18 +9,18 @@ const FRAME_LAYOUT = Object.freeze({
   width:320,
   height:470,
   portrait:{x:84,y:90,width:168,height:244},
-  crest:{x:168,y:361,diameter:76},
-  nameplate:{x:168,y:431,width:138,height:24}
+  crest:{x:160,y:361,diameter:76},
+  nameplate:{x:160,y:431,width:138,height:24}
 });
 
 // Explicit optical calibration is intentional. Each Spirit can be tuned independently.
 const SPIRIT_CALIBRATION = Object.freeze({
-  ant:{x:0,y:-5,s:.90},axolotl:{x:0,y:-6,s:.88},badger:{x:0,y:-5,s:.90},bat:{x:0,y:-5,s:.87},bear:{x:0,y:-5,s:.90},
-  dragon:{x:2,y:-7,s:.84},fox:{x:0,y:-5,s:.89},hawk:{x:0,y:-6,s:.86},lion:{x:0,y:-5,s:.89},mantis:{x:0,y:-5,s:.85},
-  mongoose:{x:1,y:-5,s:.88},monkey:{x:0,y:-5,s:.87},ox:{x:0,y:-5,s:.88},rabbit:{x:0,y:-5,s:.88},rat:{x:0,y:-5,s:.89},
-  shark:{x:2,y:-7,s:.84},snake:{x:0,y:-6,s:.87},sphinx:{x:2,y:-6,s:.86},spider:{x:0,y:-5,s:.87},stag:{x:0,y:-6,s:.86},
-  turtle:{x:0,y:-5,s:.88},vulture:{x:0,y:-6,s:.85},wolf:{x:0,y:-5,s:.88},phoenix:{x:0,y:-6,s:.83},barguest:{x:0,y:-5,s:.88},
-  golem:{x:0,y:-5,s:.87},exile:{x:0,y:-5,s:.87},kraken:{x:0,y:-6,s:.85},thunderbird:{x:0,y:-6,s:.83},unicorn:{x:0,y:-5,s:.87}
+  ant:{x:0,y:-2,s:1.04},axolotl:{x:0,y:-2,s:1.00},badger:{x:0,y:-2,s:1.02},bat:{x:0,y:-1,s:1.08},bear:{x:0,y:-2,s:1.02},
+  dragon:{x:1,y:-3,s:.98},fox:{x:0,y:-2,s:1.03},hawk:{x:0,y:-2,s:1.02},lion:{x:0,y:-2,s:1.03},mantis:{x:0,y:-2,s:1.00},
+  mongoose:{x:0,y:-2,s:1.02},monkey:{x:0,y:-2,s:1.02},ox:{x:0,y:-2,s:1.02},rabbit:{x:0,y:-1,s:1.08},rat:{x:0,y:-2,s:1.04},
+  shark:{x:1,y:-3,s:.98},snake:{x:0,y:-2,s:1.02},sphinx:{x:1,y:-2,s:1.00},spider:{x:0,y:-2,s:1.02},stag:{x:0,y:-2,s:1.01},
+  turtle:{x:0,y:-2,s:1.02},vulture:{x:0,y:-2,s:1.00},wolf:{x:0,y:-2,s:1.04},phoenix:{x:0,y:-3,s:.98},barguest:{x:0,y:-2,s:1.03},
+  golem:{x:0,y:-2,s:1.02},exile:{x:0,y:-2,s:1.02},kraken:{x:0,y:-2,s:1.00},thunderbird:{x:0,y:-3,s:.98},unicorn:{x:0,y:-2,s:1.02}
 });
 
 function optionMarkup(options, selected, blankLabel=null){
@@ -31,7 +31,7 @@ function optionMarkup(options, selected, blankLabel=null){
 }
 
 function currentSpiritKey(actor){return getSpiritKey(actor.system.spiritKey)||getSpiritKey(actor.items.find(item=>item.type==="spirit"));}
-function currentFrameColor(actor){return CANDLELIGHT_FRAME_COLORS[actor.system.portraitFrameColor]?actor.system.portraitFrameColor:"gold";}
+function currentFrameColor(actor){const saved=actor.system.portraitFrameColor;return CANDLELIGHT_FRAME_COLORS[saved]?saved:(saved==="teal"?"white":"gold");}
 function syncControls(root,actor){const key=currentSpiritKey(actor),color=currentFrameColor(actor);for(const s of root.querySelectorAll("[data-cl-spirit-select]"))s.value=key;for(const s of root.querySelectorAll("[data-cl-frame-select]"))s.value=color;}
 
 function bindSelect(select,value,path,actor,root){
@@ -62,22 +62,9 @@ function neutralizeDuplicateLevelField(root){
 
 function ensurePortraitFrameImage(portrait){
   let host=portrait.querySelector(":scope > .cl-portrait-frame-assets");
-  if(!host){
-    host=document.createElement("div");
-    host.className="cl-portrait-frame-assets";
-    host.setAttribute("aria-hidden","true");
-    portrait.prepend(host);
-  }
+  if(!host){host=document.createElement("div");host.className="cl-portrait-frame-assets";host.setAttribute("aria-hidden","true");portrait.prepend(host);}
   let image=host.querySelector(".cl-production-frame-image");
-  if(!image){
-    image=document.createElement("img");
-    image.className="cl-production-frame-image";
-    image.alt="";
-    image.decoding="async";
-    image.draggable=false;
-    image.addEventListener("error",()=>console.error(`Candlelight | Production portrait frame failed to load: ${FRAME_IMAGE}`),{once:true});
-    host.replaceChildren(image);
-  }
+  if(!image){image=document.createElement("img");image.className="cl-production-frame-image";image.alt="";image.decoding="async";image.draggable=false;image.addEventListener("error",()=>console.error(`Candlelight | Production portrait frame failed to load: ${FRAME_IMAGE}`),{once:true});host.replaceChildren(image);}
   if(!image.src.endsWith(FRAME_IMAGE)) image.src=FRAME_IMAGE;
   return image;
 }
@@ -85,66 +72,29 @@ function ensurePortraitFrameImage(portrait){
 function alphaBounds(ctx,w,h){
   const {data}=ctx.getImageData(0,0,w,h);let minX=w,minY=h,maxX=-1,maxY=-1;
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(data[(y*w+x)*4+3]<8)continue;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);}
-  if(maxX<minX)return null;
-  return{x:minX,y:minY,width:maxX-minX+1,height:maxY-minY+1};
+  if(maxX<minX)return null;return{x:minX,y:minY,width:maxX-minX+1,height:maxY-minY+1};
 }
 
 function tintCanvas(canvas,src,tint,key=""){
-  if(!canvas||!src)return;
-  const size=Number(canvas.dataset.size||76);canvas.width=size;canvas.height=size;
-  const out=canvas.getContext("2d");if(!out)return;
+  if(!canvas||!src)return;const size=Number(canvas.dataset.size||76);canvas.width=size;canvas.height=size;const out=canvas.getContext("2d");if(!out)return;
   const image=new Image();image.decoding="async";
-  image.onload=()=>{
-    const scratch=document.createElement("canvas");scratch.width=image.naturalWidth;scratch.height=image.naturalHeight;
-    const sctx=scratch.getContext("2d",{willReadFrequently:true});if(!sctx)return;sctx.drawImage(image,0,0);
-    const b=alphaBounds(sctx,scratch.width,scratch.height)??{x:0,y:0,width:scratch.width,height:scratch.height};
-    const c=SPIRIT_CALIBRATION[key]??{x:0,y:-5,s:.88};
-    const pad=Math.round(size*.12),avail=size-pad*2,scale=Math.min(avail/b.width,avail/b.height)*c.s;
-    const width=b.width*scale,height=b.height*scale;
-    const x=(size-width)/2+c.x,y=(size-height)/2+c.y;
-    out.clearRect(0,0,size,size);out.save();out.drawImage(scratch,b.x,b.y,b.width,b.height,x,y,width,height);out.globalCompositeOperation="source-in";out.fillStyle=tint;out.fillRect(0,0,size,size);out.restore();
-  };
+  image.onload=()=>{const scratch=document.createElement("canvas");scratch.width=image.naturalWidth;scratch.height=image.naturalHeight;const sctx=scratch.getContext("2d",{willReadFrequently:true});if(!sctx)return;sctx.drawImage(image,0,0);const b=alphaBounds(sctx,scratch.width,scratch.height)??{x:0,y:0,width:scratch.width,height:scratch.height};const c=SPIRIT_CALIBRATION[key]??{x:0,y:-2,s:1.02};const pad=Math.round(size*.08),avail=size-pad*2,scale=Math.min(avail/b.width,avail/b.height)*c.s;const width=b.width*scale,height=b.height*scale;const x=(size-width)/2+c.x,y=(size-height)/2+c.y;out.clearRect(0,0,size,size);out.save();out.drawImage(scratch,b.x,b.y,b.width,b.height,x,y,width,height);out.globalCompositeOperation="source-in";out.fillStyle=tint;out.fillRect(0,0,size,size);out.restore();};
   image.onerror=()=>console.warn(`Candlelight | Could not load Spirit icon ${src}`);image.src=src;
 }
 
 function applyLayoutVariables(portrait){
-  portrait.style.setProperty("--cl-frame-native-width",String(FRAME_LAYOUT.width));
-  portrait.style.setProperty("--cl-frame-native-height",String(FRAME_LAYOUT.height));
-  portrait.style.setProperty("--cl-portrait-x",`${FRAME_LAYOUT.portrait.x}px`);
-  portrait.style.setProperty("--cl-portrait-y",`${FRAME_LAYOUT.portrait.y}px`);
-  portrait.style.setProperty("--cl-portrait-width",`${FRAME_LAYOUT.portrait.width}px`);
-  portrait.style.setProperty("--cl-portrait-height",`${FRAME_LAYOUT.portrait.height}px`);
-  portrait.style.setProperty("--cl-crest-x",`${FRAME_LAYOUT.crest.x}px`);
-  portrait.style.setProperty("--cl-crest-y",`${FRAME_LAYOUT.crest.y}px`);
-  portrait.style.setProperty("--cl-crest-size",`${FRAME_LAYOUT.crest.diameter}px`);
-  portrait.style.setProperty("--cl-nameplate-y",`${FRAME_LAYOUT.nameplate.y}px`);
-  portrait.style.setProperty("--cl-nameplate-width",`${FRAME_LAYOUT.nameplate.width}px`);
+  portrait.style.setProperty("--cl-frame-native-width",String(FRAME_LAYOUT.width));portrait.style.setProperty("--cl-frame-native-height",String(FRAME_LAYOUT.height));portrait.style.setProperty("--cl-portrait-x",`${FRAME_LAYOUT.portrait.x}px`);portrait.style.setProperty("--cl-portrait-y",`${FRAME_LAYOUT.portrait.y}px`);portrait.style.setProperty("--cl-portrait-width",`${FRAME_LAYOUT.portrait.width}px`);portrait.style.setProperty("--cl-portrait-height",`${FRAME_LAYOUT.portrait.height}px`);portrait.style.setProperty("--cl-crest-x",`${FRAME_LAYOUT.crest.x}px`);portrait.style.setProperty("--cl-crest-y",`${FRAME_LAYOUT.crest.y}px`);portrait.style.setProperty("--cl-crest-size",`${FRAME_LAYOUT.crest.diameter}px`);portrait.style.setProperty("--cl-nameplate-y",`${FRAME_LAYOUT.nameplate.y}px`);portrait.style.setProperty("--cl-nameplate-width",`${FRAME_LAYOUT.nameplate.width}px`);
 }
 
 function updatePortrait(root,actor){
-  const portrait=root.querySelector(".cl-core-portrait");if(!portrait)return;
-  const color=currentFrameColor(actor);
-  portrait.classList.remove(...FRAME_CLASSES);portrait.classList.add(`cl-frame-${color}`);
-  applyLayoutVariables(portrait);ensurePortraitFrameImage(portrait);
-  const key=currentSpiritKey(actor);let crest=portrait.querySelector(".cl-portrait-spirit");
-  if(!key){crest?.remove();portrait.classList.remove("cl-has-spirit");return;}
-  portrait.classList.add("cl-has-spirit");const label=getSpiritLabel(key);
-  if(!crest){crest=document.createElement("div");crest.className="cl-portrait-spirit";portrait.appendChild(crest);}
-  crest.title=`${label} Spirit`;
-  crest.innerHTML=`<canvas class="cl-spirit-canvas" data-size="76" role="img" aria-label="${label} Spirit icon"></canvas><span class="cl-portrait-spirit-name">${label}</span>`;
-  tintCanvas(crest.querySelector("canvas"),getSpiritIcon(key),FRAME_HEX[color],key);
+  const portrait=root.querySelector(".cl-core-portrait");if(!portrait)return;const color=currentFrameColor(actor);portrait.classList.remove(...FRAME_CLASSES);portrait.classList.add(`cl-frame-${color}`);applyLayoutVariables(portrait);ensurePortraitFrameImage(portrait);
+  const key=currentSpiritKey(actor);let crest=portrait.querySelector(".cl-portrait-spirit");if(!key){crest?.remove();portrait.classList.remove("cl-has-spirit");return;}portrait.classList.add("cl-has-spirit");const label=getSpiritLabel(key);if(!crest){crest=document.createElement("div");crest.className="cl-portrait-spirit";portrait.appendChild(crest);}crest.title=`${label} Spirit`;crest.innerHTML=`<canvas class="cl-spirit-canvas" data-size="76" role="img" aria-label="${label} Spirit icon"></canvas><span class="cl-portrait-spirit-name">${label}</span>`;tintCanvas(crest.querySelector("canvas"),getSpiritIcon(key),FRAME_HEX[color],key);
 }
 
 function updateSpiritTab(root,actor){
-  const key=currentSpiritKey(actor);if(!key)return;
-  const feature=root.querySelector('[data-tab-panel="spirit"] section .cl-feature-card');if(!feature)return;
-  const color=currentFrameColor(actor);feature.classList.remove(...FRAME_CLASSES);feature.classList.add(`cl-frame-${color}`);
-  const old=feature.querySelector("img,.cl-spirit-feature-mask,.cl-spirit-feature-canvas");const canvas=document.createElement("canvas");canvas.className="cl-spirit-feature-canvas";canvas.dataset.size="128";old?.replaceWith(canvas);if(!old)feature.prepend(canvas);tintCanvas(canvas,getSpiritIcon(key),FRAME_HEX[color],key);
+  const key=currentSpiritKey(actor);if(!key)return;const feature=root.querySelector('[data-tab-panel="spirit"] section .cl-feature-card');if(!feature)return;const color=currentFrameColor(actor);feature.classList.remove(...FRAME_CLASSES);feature.classList.add(`cl-frame-${color}`);const old=feature.querySelector("img,.cl-spirit-feature-mask,.cl-spirit-feature-canvas");const canvas=document.createElement("canvas");canvas.className="cl-spirit-feature-canvas";canvas.dataset.size="128";old?.replaceWith(canvas);if(!old)feature.prepend(canvas);tintCanvas(canvas,getSpiritIcon(key),FRAME_HEX[color],key);
 }
 
 Hooks.on("renderActorSheet",(app,html)=>{
-  const actor=app.actor;if(!actor||actor.type!=="character")return;
-  const root=html?.[0]??html;if(!root?.querySelector?.(".candlelight-sheet"))return;
-  const form=root.matches?.(".candlelight-sheet")?root:root.querySelector(".candlelight-sheet");if(!form)return;
-  neutralizeDuplicateLevelField(form);ensureControls(form,actor);updatePortrait(form,actor);updateSpiritTab(form,actor);
+  const actor=app.actor;if(!actor||actor.type!=="character")return;const root=html?.[0]??html;if(!root?.querySelector?.(".candlelight-sheet"))return;const form=root.matches?.(".candlelight-sheet")?root:root.querySelector(".candlelight-sheet");if(!form)return;neutralizeDuplicateLevelField(form);ensureControls(form,actor);updatePortrait(form,actor);updateSpiritTab(form,actor);
 });
